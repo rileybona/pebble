@@ -2,18 +2,18 @@ import { NavLink } from "react-router-dom";
 import ProfileButton from "./ProfileButton";
 import "./Navigation.css";
 
-function Navigation() {
+function Navigation({ landing }) {
   return (
-    <ul>
-      <li>
-        <NavLink to="/">Home</NavLink>
-      </li>
-
-      <li>
-        <ProfileButton />
-      </li>
-    </ul>
+    <nav id="navbar">
+      <div id="navbar-left">
+        <NavLink to="/">
+          <h3>logo Pebble</h3>
+        </NavLink>
+      </div>
+      <div id="navbar-right">{landing || <ProfileButton />}</div>
+    </nav>
   );
 }
 
 export default Navigation;
+
