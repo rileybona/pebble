@@ -8,6 +8,9 @@ Create Date: 2024-07-10 14:41:04.979611
 from alembic import op
 import sqlalchemy as sa
 
+import os
+environment = os.getenv("FLASK_ENV")
+SCHEMA = os.environ.get("SCHEMA")
 
 # revision identifiers, used by Alembic.
 revision = '87621a967cf6'
@@ -27,6 +30,8 @@ def upgrade():
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
     )
+    if environment == "production":
+        op.execute(f"ALTER TABLE users SET SCHEMA {SCHEMA};")
     op.create_table('habits',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
@@ -38,6 +43,8 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    if environment == "production":
+        op.execute(f"ALTER TABLE habits SET SCHEMA {SCHEMA};")
     op.create_table('completion',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('habit_id', sa.Integer(), nullable=False),
@@ -45,6 +52,8 @@ def upgrade():
     sa.ForeignKeyConstraint(['habit_id'], ['habits.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    if environment == "production":
+        op.execute(f"ALTER TABLE completion SET SCHEMA {SCHEMA};")
     op.create_table('recurrances',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('habit_id', sa.Integer(), nullable=False),
@@ -58,6 +67,8 @@ def upgrade():
     sa.ForeignKeyConstraint(['habit_id'], ['habits.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    if environment == "production":
+        op.execute(f"ALTER TABLE recurrances SET SCHEMA {SCHEMA};")
     # ### end Alembic commands ###
 
 
