@@ -7,7 +7,7 @@ function Navigation({ landing }) {
     <nav id="navbar">
       <div id="navbar-left">
         <NavLink to="/">
-          <h3>logo Pebble</h3>
+          <h3>o Pebble</h3>
         </NavLink>
       </div>
       <div id="navbar-right">{landing || <ProfileButton />}</div>

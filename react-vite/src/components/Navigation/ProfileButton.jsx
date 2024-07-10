@@ -76,8 +76,7 @@ function ProfileButton() {
               >
                 <button
                   onClick={() => {
-                    navigate("/account/settings");
-                    closeMenu();
+                    alert("feature coming soon!");
                   }}
                   id="account-button"
                 >
