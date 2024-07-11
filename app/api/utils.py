@@ -128,8 +128,27 @@ class HabitUtils:
         # grab updated habit from database and return it
         updated_habit = HabitUtils.get_habit_details(int(habitId))
         return updated_habit
+    
+    @staticmethod
+    def delete_habit_by_id(habitId):
+        """Delete and existing habit by its ID"""
 
+        # query for habit by id provided
+        habit = Habit.query.filter(
+            Habit.id == habitId
+        ).first()
 
+        # return 500 i.s.e. if not in db or if not owned by current user
+        if (
+            isinstance(habit, Habit)
+            and AuthUtils.get_current_user()["id"] == habit.user_id 
+        ): # delete habit 
+            db.session.delete(habit)
+            db.session.commit()
+            return 0
+        else:
+            print('not passing my validations')
+            return -1
 
 
 class RecurranceUtils: 

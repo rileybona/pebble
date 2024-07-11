@@ -53,6 +53,11 @@ def add_completion_to_habit(habitId):
 # delete a habit 
 @habit_routes.route('/<int:habitId>', methods=["DELETE"])
 @login_required
-def delete_habit():
-    pass
+def delete_habit(habitId):
+    status = HabitUtils.delete_habit_by_id(habitId)
+    if status == 0:
+        return jsonify({"message": "success!"}), 200
+    if status == -1: 
+        return jsonify({"message": "Internal Server Error"}), 500 
+    return status, 400
 
