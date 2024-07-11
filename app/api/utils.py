@@ -5,7 +5,8 @@ from flask import Response
 from datetime import datetime
 from flask import jsonify
 
-# FEATURE ONE UTILS (for now)
+# FEATURE ONE UTILS done 
+
 class HabitUtils:
     """API Habit Utility Functions"""
 
@@ -197,6 +198,63 @@ class RecurranceUtils:
             db.session.commit()
             return "successfully deleted recurrance data for this habit"
         else: return ["No recurrance data to delete!"]
+
+    @staticmethod
+    def add_recurrances(habitId, details):
+        #  query for existing recurrance data
+        habit_recurs = Recurrance.query.filter(
+            Recurrance.habit_id == habitId
+        ).first()
+
+        # if habit in recurrances db, update that data
+        if isinstance(habit_recurs, Recurrance):
+            if "monday" in details:
+                habit_recurs.monday = details['monday']
+            if "tuesday" in details:
+                habit_recurs.tuesday = details['tuesday']
+            if "wednesday" in details:
+                habit_recurs.wednesday = details['wednesday']
+            if "thursday" in details:
+                habit_recurs.thursday = details['thursday']
+            if "friday" in details:
+                habit_recurs.friday = details['friday']
+            if "saturday" in details:
+                habit_recurs.saturday = details['saturday']
+            if "sunday" in details:
+                habit_recurs.sunday = details['sunday']
+            
+            db.session.commit()
+
+        #  if not in db, add new recurrance data 
+        else:
+            new_recurrances = Recurrance(
+                habit_id = habitId
+            )
+            if "monday" in details:
+                new_recurrances.monday = details['monday']
+            if "tuesday" in details:
+                new_recurrances.tuesday = details['tuesday']
+            if "wednesday" in details:
+                new_recurrances.wednesday = details['wednesday']
+            if "thursday" in details:
+                new_recurrances.thursday = details['thursday']
+            if "friday" in details:
+                new_recurrances.friday = details['friday']
+            if "saturday" in details:
+                new_recurrances.saturday = details['saturday']
+            if "sunday" in details:
+                new_recurrances.sunday = details['sunday']
+            
+            db.session.add(new_recurrances)
+            db.session.commit()
+        
+        # get updated info 
+        updated_recurrances = Recurrance.query.filter(
+            Recurrance.habit_id == habitId
+        ).first()
+
+
+        return RecurranceUtils.parse_recurrance_obj(updated_recurrances)
 
 class CompletionUtils: 
     """API Completion Utility Functions"""

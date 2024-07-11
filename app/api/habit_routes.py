@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required
-from .utils import HabitUtils, CompletionUtils
+from .utils import HabitUtils, CompletionUtils, RecurranceUtils
 from app.models import User
 
 habit_routes = Blueprint("habits", __name__)
@@ -30,6 +30,14 @@ def post_new_habit():
     return new_habit, 201
 
 # add recurrances to a weekly habit 
+@habit_routes.route('/<int:habitId>/recurrances', methods=["POST"])
+@login_required
+def add_recurrance_data_to_habit(habitId):
+    req_body = request.get_json()
+    response = RecurranceUtils.add_recurrances(habitId, req_body)
+    if isinstance(response, Exception):
+        return jsonify({"message": "Internal Server Error"}), 500 
+    return response 
 
 # update a habit 
 @habit_routes.route('/<int:habitId>', methods=["PUT"])
