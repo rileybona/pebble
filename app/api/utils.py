@@ -1,0 +1,221 @@
+from os import name 
+from app.models import db, Habit, Recurrance, Completion, User 
+from flask_login import current_user
+from flask import Response 
+from datetime import datetime
+from flask import jsonify
+
+# FEATURE ONE UTILS (for now)
+class HabitUtils:
+    """API Habit Utility Functions"""
+
+    # convert habit object to jsonifiable dict
+    @staticmethod
+    def parse_habit_data(habit_obj):
+        # main parse logic 
+        jsonable_obj = {
+            "id": habit_obj.id,
+            "user_id": habit_obj.user_id,
+            "title": habit_obj.title,
+            "notes": habit_obj.notes,
+            "recurrance_type": habit_obj.recurrance_type
+        }
+        try:
+           return jsonable_obj
+        except:
+            raise Exception("Invalid Habit Object from query")
+
+
+    @staticmethod
+    def get_all_habits():
+        """get all of a users habits"""
+        userId = AuthUtils.get_current_user()['id']
+        all_habits = Habit.query.filter(
+            Habit.user_id == userId
+        ).all()
+
+        all_habits = [HabitUtils.parse_habit_data(habit) for habit in all_habits]
+        for habit in all_habits:
+            # if habit is weekly, include which days it recurrs on 
+            if (habit["recurrance_type"] == "weekly"):
+                habit_recurs = RecurranceUtils.get_recurrances_by_habit_id(habit["id"])[0]
+                habit["Recurrances"] = habit_recurs
+            # call for completions of this habit and attach data to return object 
+            habit_completions = CompletionUtils.get_completions_by_habit_id(habit["id"])
+            habit["Completions"] = habit_completions
+
+        return all_habits
+    
+    @staticmethod
+    def get_habit_details(habitId):
+        """returns details of one habit by its id"""
+
+        habitId = int(habitId)
+
+        # grab habit from db 
+        habit = Habit.query.filter(
+            Habit.id == habitId
+        ).first()
+
+        # parse it to jsonable dict
+        habit = HabitUtils.parse_habit_data(habit)
+        # add recurrances if necessary 
+        if (habit["recurrance_type"] == "weekly"):
+                habit_recurs = RecurranceUtils.get_recurrances_by_habit_id(habit["id"])[0]
+                habit["Recurrances"] = habit_recurs
+        # call for completions of this habit and attach data to return object 
+        habit_completions = CompletionUtils.get_completions_by_habit_id(habit["id"])
+        habit["Completions"] = habit_completions
+        # return it babes 
+        return habit 
+
+
+    
+    @staticmethod
+    def create_new_habit(details):
+        """creates a new habit under current user"""
+        new_habit = Habit(
+            user_id=AuthUtils.get_current_user()["id"],
+            title=details['title'],
+            notes=details['notes'],
+        )
+        # will default to 'Daily'
+        if "recurrance_type" in details:
+            new_habit.recurrance_type = details["recurrance_type"]
+
+        try:
+            db.session.add(new_habit)
+            db.session.commit()
+            return HabitUtils.parse_habit_data(new_habit)
+        except:
+            return 500
+        
+    @staticmethod
+    def update_habit(habitId, details):
+        """updates existing habit"""
+
+        # grab existing habit 
+        try:
+            habit = Habit.query.filter(
+                Habit.id == habitId
+            ).first() 
+        except Exception: 
+            return 400
+        
+        # clear recurrance data if editing from a weekly habit to a daily habit 
+        if "recurrance_type" in details:
+            if ((habit.recurrance_type == "weekly") and (details["recurrance_type"] == "Daily")):
+                msg = RecurranceUtils.delete_recurrances_by_habit_it(habitId)
+                print(msg)
+
+        # validate that user owns this habit 
+        current_user = AuthUtils.get_current_user()["id"]
+        if not (current_user == habit.user_id):
+            return 403
+        
+        # update values of the habit & commit changes to database 
+        try: 
+            if "title" in details:
+                habit.title = details["title"]
+            if "notes" in details:
+                habit.notes = details["notes"] # note to add a null notes attribute if empty? or ""
+            if "recurrance_type" in details:
+                habit.recurrance_type = details["recurrance_type"]
+            db.session.commit()
+        except Exception:
+            return 500
+        
+        # grab updated habit from database and return it
+        updated_habit = HabitUtils.get_habit_details(int(habitId))
+        return updated_habit
+
+
+
+
+class RecurranceUtils: 
+    """API Recurrance Utility Functions"""
+
+    # format return obj
+    @staticmethod
+    def parse_recurrance_obj(recurrance_obj):
+        try: 
+            return {
+                "sunday": recurrance_obj.sunday,
+                "monday": recurrance_obj.monday,
+                "tuesday": recurrance_obj.tuesday,
+                "wednesday": recurrance_obj.wednesday,
+                "thursday": recurrance_obj.thursday,
+                "friday": recurrance_obj.friday,
+                "saturday": recurrance_obj.saturday
+            }
+        except:
+            raise Exception("recurrances object invalid from db query")
+
+    # find which days a recurring habit is meant to display 
+    @staticmethod
+    def get_recurrances_by_habit_id(habit_id):
+        habit_recurs = Recurrance.query.filter(
+            Recurrance.habit_id == habit_id
+        ).all()
+
+        habit_recurs = [RecurranceUtils.parse_recurrance_obj(recurrs) for recurrs in habit_recurs] # this logic may be redundant check in the morning please
+        if(len(habit_recurs) > 0):
+            return habit_recurs
+        # seeders & tests with 'weekly' but no recurrance data. 
+        # Note: don't let users make weekly habits but not select any of the days 
+        return list(["No recurrance data found."])
+    
+    # delete recurrance data for a habit by habit id 
+    @staticmethod
+    def delete_recurrances_by_habit_it(habit_id):
+
+        habit_recurs = Recurrance.query.filter(
+            Recurrance.habit_id == habit_id
+        ).all()
+    
+        if(len(habit_recurs) > 0):
+            db.session.delete(habit_recurs)
+            db.session.commit()
+            return "successfully deleted recurrance data for this habit"
+        else: return ["No recurrance data to delete!"]
+
+class CompletionUtils: 
+    """API Completion Utility Functions"""
+
+    # format completions as an array of dates 
+    @staticmethod
+    def parse_completion_data(completion_obj):
+        return completion_obj.completed_at
+
+    # find completion data for a given habit 
+    @staticmethod
+    def get_completions_by_habit_id(habit_id):
+        all_completions = Completion.query.filter(
+            Completion.habit_id == habit_id
+        ).all() 
+        all_completions = [CompletionUtils.parse_completion_data(completion) for completion in all_completions]
+        return all_completions
+    
+    @staticmethod 
+    def add_completion_to_habit(habit_id):
+        new_completion = Completion(
+            habit_id = habit_id
+        )
+        try:
+            db.session.add(new_completion)
+            db.session.commit()
+        except Exception:
+            return "failed to add completion"
+        
+        return CompletionUtils.parse_completion_data(new_completion)
+
+
+
+class AuthUtils:
+    @staticmethod
+    def get_current_user():
+        """Get the current user info"""
+        if current_user.is_authenticated:
+            return current_user.to_dict()
+        else:
+            raise Exception("User not logged in")
