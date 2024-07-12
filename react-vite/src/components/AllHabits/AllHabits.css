@@ -1,3 +1,98 @@
-h1 {
+.habits-page {
+    width: 50vw;
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.habits-upper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    margin-bottom: 40px;
+}
+
+.habit-card {
+    display: flex;
+    flex-direction: row;
+    height: 65px;
+    width: 300px;
+    margin-bottom: 40px;
+    
+    background-color: white;
+    /* box-shadow: 5px, 5px, 5px, black; */
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.368);
+}
+
+.habit-right {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.habit-right:hover {
+    cursor: pointer;
+}
+
+.habit-card h2 {
+    margin: 0;
+    padding-top: 10px;
+    padding-left: 3px;
+    font-size: large;
+}
+
+.habit-card p {
+    margin: 0;
+    padding-top: 3px;
+    font-size: small;
+    color:gray
+}
+
+.habit-notes {
+    padding-left: 20px;
+}
+
+.habit-card .habit-streak-container {
     color: red;
+    justify-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.streak {
+    display: flex;
+    flex-direction: row;
+}
+
+.streak p {
+    padding-right: 5px;
+    padding-bottom: 1px;
+}
+
+.checkbox-container {
+    width: 30px;
+    background-color: rgb(121, 199, 153);
+    margin-right: 5px;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+}
+
+.checkbox {
+    width: 16px;
+    height: 16px;
+    bottom: 3px;
+    border: none;
+
+    position: relative;
+    left: 5px;
+    top: 15px;
+
+    background-color: rgb(224, 252, 224);
 }

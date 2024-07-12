@@ -62,6 +62,22 @@ export const getAllHabits = () => async(dispatch) => {
 }
 
 // Reducer  - - - - - -
-const habitsReducer = (
-    state = {} 
-)
+const habitReducer = (
+    state = { habits: [] },
+    action
+) => {
+    switch (action.type) {
+        case GET_ALL_HABITS: {
+            const habits = [];
+            action.payload.map((habit, i) => {
+                habits[i] = habit;
+            });
+            return { ...state, habits}
+        }
+        default:
+            return state;
+    }
+}
+
+export default habitReducer;
+

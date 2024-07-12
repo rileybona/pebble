@@ -15,6 +15,9 @@ function Sidebar() {
     }, [dispatch])
 
     if (!isLoaded) return <h1>Loading</h1>;
+    if (!user) return (
+        <></>
+    )
     return (
         <ul id="sidebar">
             <li>

@@ -19,7 +19,8 @@ class HabitUtils:
             "user_id": habit_obj.user_id,
             "title": habit_obj.title,
             "notes": habit_obj.notes,
-            "recurrance_type": habit_obj.recurrance_type
+            "recurrance_type": habit_obj.recurrance_type,
+            "created_at": habit_obj.created_at
         }
         try:
            return jsonable_obj
