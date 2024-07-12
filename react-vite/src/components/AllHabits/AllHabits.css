@@ -96,3 +96,23 @@
 
     background-color: rgb(224, 252, 224);
 }
+
+.hidden {
+    visibility: hidden;
+}
+
+.habit-toggle {
+    color: grey;
+}
+
+.habit-toggle:hover {
+    cursor: pointer;
+}
+
+#checked {
+    background-color: grey;
+}
+
+#checked button {
+    background-color: lightgray;
+}

@@ -32,34 +32,42 @@ function LoginFormPage() {
   };
 
   return (
-    <>
+    <div className="login-card">
       <h1>Log In</h1>
       {errors.length > 0 &&
         errors.map((message) => <p key={message}>{message}</p>)}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-        {errors.email && <p>{errors.email}</p>}
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        {errors.password && <p>{errors.password}</p>}
-        <button type="submit">Log In</button>
+      <form onSubmit={handleSubmit} className="login-form">
+        <div className="email">
+          <label>
+            Email
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </label>
+          {errors.email && <p>{errors.email}</p>}
+        </div>
+        <div className="password">
+          <label>
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </label>
+          {errors.password && <p>{errors.password}</p>}
+        </div>
+        <button type="submit" className="login-button">Log In</button>
       </form>
-    </>
+      <div className="login-footer">
+        <p className="desc">don&apos;t have an account?</p>
+        <p className="create-account">Create Account</p>
+      </div>
+    </div>
   );
 }
 

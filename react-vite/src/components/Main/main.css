@@ -2,12 +2,10 @@ div.main-content {
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 100%;
-    min-height: 500px;
+    height: 100vh;
     padding-top: 20px;
     background-color: rgba(245, 252, 233, 0.774);
 }
-
 
 #sidebar {
     position: absolute;
@@ -17,4 +15,41 @@ div.main-content {
 #sidebar li {
     padding-left: 10px;
     padding-top: 10px;
+}
+
+
+
+.splash-page {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.splash-left {
+    height: 100%;
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#spigot {
+    margin-top: 100px;
+    height: 200px;
+}
+
+
+.splash-right {
+    height: 100%;
+    /* background-color: blue; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+
+.splash-right p {
+    margin-top: 100px;
 }
