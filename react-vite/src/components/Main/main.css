@@ -37,7 +37,13 @@ div.main-content {
 
 #spigot {
     margin-top: 100px;
-    height: 200px;
+    height: 450px;
+    margin-right: 500px;
+    /* position: absolute; */
+    /* left: 50px; */
+    /* bottom: 30px; */
+    z-index: 0;
+    /* overflow-y: hidden; */
 }
 
 
@@ -52,4 +58,19 @@ div.main-content {
 
 .splash-right p {
     margin-top: 100px;
+}
+
+#pebtower {
+    height: 200px;
+    margin-right: 200px;
+    /* margin-right: 100px; */
+
+}
+
+.welcome-page {
+    margin-left: 300px;
+}
+
+.welcome-page h3 {
+    color: grey;
 }

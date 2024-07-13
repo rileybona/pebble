@@ -1,8 +1,9 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { getAllHabits } from '../../redux/habit'
-
+import OpenModalButton from "../OpenModalButton";
 import './AllHabits.css'
+import CreateHabitModal from '../HabitModals/CreateHabitModal';
 
 function dateArrToStrings(array) {
     let stringdates = []
@@ -124,9 +125,9 @@ function AllHabits() {
     }
 
     // open create modal (onClick function)
-    function openCreate() {
-        alert('open add habit modal');
-    }
+    // function openCreate() {
+    //     alert('open add habit modal');
+    // }
 
     // SORT habit_array to ONLY display DUE habits
     // Create second array to store HIDDEN or COMPLETED Habits 
@@ -181,7 +182,13 @@ function AllHabits() {
     return (
         <div className='habits-page'>
             <div className='habits-upper'>
-                <button onClick={()=> openCreate()}>Add a Habit</button>
+                <OpenModalButton 
+                    buttonText='Add a it'
+                    modalComponenet={
+                        <CreateHabitModal />
+                    }
+                />
+                {/* <button onClick={()=> openCreate()}>Add a Habit</button> */}
             </div>
             <div className='habits-main'>
                 {visHabits.map((habit, i) => (

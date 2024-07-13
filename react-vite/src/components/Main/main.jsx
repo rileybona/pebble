@@ -7,11 +7,11 @@ function Main() {
   if (!user?.id) return (
     <div className="splash-page">
       <div className="splash-left">
-        <img src='../../public/splash-left.jpeg' id='spigot'/>
+        <img src='/splash.png' id='spigot'/>
       </div>
       <LoginFormPage />
       <div className="splash-right">
-        <p>img</p>
+        <img src='/pebbles.png' id='pebtower' />
       </div>
     </div>
   )
