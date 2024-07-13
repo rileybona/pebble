@@ -1,14 +1,15 @@
-import { useDispatch } from "react-redux";
-
+import { useState } from "react";
+// import { useDispatch } from "react-redux";
+import { useModal } from '../../context/Modal'
 function CreateHabitModal() {
     // set states, react hooks, etc 
-    const dispatch = useDispatch()
-
+    // const dispatch = useDispatch()
+    const { closeModal } = useModal();
     // form values 
     const [title, setTitle] = useState("");
     const [notes, setNotes] = useState(""); 
     const [recurranceType, setRecurranceType] = useState("Daily");
-    // const [recurrs, setRecurrs] = useState(['sunday', 'monday','tuesday', 'wednesday','thursday', 'friday', 'saturday']);
+    const [recurrs, setRecurrs] = useState(['sunday', 'monday','tuesday', 'wednesday','thursday', 'friday', 'saturday']);
 
     // weekday hooks for select recurrances
     const [monday, setMonday] = useState(true);
@@ -34,14 +35,15 @@ function CreateHabitModal() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('submitting!');
-        const newHabit = {
-            user_id: 1, // PLEASE CHANGE lol
-            title: title,
-            notes: notes,
-            recurrance_type: recurranceType,
-        }
+        // const newHabit = {
+        //     user_id: 1, // PLEASE CHANGE lol
+        //     title: title,
+        //     notes: notes,
+        //     recurrance_type: recurranceType,
+        // }
 
-        console.log(newHabit);
+        // console.log(newHabit);
+        closeModal();
     }
 
 
@@ -85,13 +87,27 @@ function CreateHabitModal() {
                 {(recurranceType == 'weekly') ? 
                     <label>
                         <p className="recurrs-label">Repeat Every</p>
-                        <button onClick={(e) => setSunday(!sunday)}>Sunday</button>
-                        <button onClick={(e) => setMonday(!monday)}>Monday</button>
-                        <button onClick={(e) => setTuesday(!tuesday)}>Tuesday</button>
-                        <button onClick={(e) => setWednesday(!wednesday)}>Wednesday</button>
-                        <button onClick={(e) => setThursday(!thursday)}>Thursday</button>
-                        <button onClick={(e) => setFriday(!friday)}>Friday</button>
-                        <button onClick={(e) => setSaturday(!saturday)}>Saturday</button>
+                        <button onClick={(e) => {
+                            e.preventDefault();
+                            setSunday(!sunday)}} className={`${sunday}`}>Sunday</button>
+                        <button onClick={(e) => {
+                            e.preventDefault();
+                            setMonday(!monday)}} className={`${monday}`}>Monday</button>
+                        <button onClick={(e) => {
+                            e.preventDefault();
+                            setTuesday(!tuesday)}} className={`${tuesday}`}>Tuesday</button>
+                        <button onClick={(e) => {
+                            e.preventDefault();
+                            setWednesday(!wednesday)}} className={`${wednesday}`}>Wednesday</button>
+                        <button onClick={(e) => {
+                            e.preventDefault();
+                            setThursday(!thursday)}} className={`${thursday}`}>Thursday</button>
+                        <button onClick={(e) => {
+                            e.preventDefault()
+                            setFriday(!friday)}} className={`${friday}`}>Friday</button>
+                        <button onClick={(e) => {
+                            e.preventDefault();
+                            setSaturday(!saturday)}} className={`${saturday}`}>Saturday</button>
                     </label> 
                 : <p></p>}
             </form>

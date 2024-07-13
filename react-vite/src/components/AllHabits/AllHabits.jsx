@@ -2,8 +2,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { getAllHabits } from '../../redux/habit'
 import OpenModalButton from "../OpenModalButton";
+import CreateHabitModal from '../HabitModals';
 import './AllHabits.css'
-import CreateHabitModal from '../HabitModals/CreateHabitModal';
+import LoginFormModal from '../LoginFormModal';
 
 function dateArrToStrings(array) {
     let stringdates = []
@@ -182,13 +183,15 @@ function AllHabits() {
     return (
         <div className='habits-page'>
             <div className='habits-upper'>
-                <OpenModalButton 
-                    buttonText='Add a it'
-                    modalComponenet={
-                        <CreateHabitModal />
-                    }
-                />
-                {/* <button onClick={()=> openCreate()}>Add a Habit</button> */}
+                <>
+                    <OpenModalButton 
+                        className='test-modal-button'
+                        buttonText='Add a Habit'
+                        modalComponent={
+                            <CreateHabitModal />
+                        }
+                    />
+                </>
             </div>
             <div className='habits-main'>
                 {visHabits.map((habit, i) => (
