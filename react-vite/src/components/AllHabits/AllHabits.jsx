@@ -4,7 +4,7 @@ import { getAllHabits } from '../../redux/habit'
 import OpenModalButton from "../OpenModalButton";
 import CreateHabitModal from '../HabitModals';
 import './AllHabits.css'
-import LoginFormModal from '../LoginFormModal';
+
 
 function dateArrToStrings(array) {
     let stringdates = []
@@ -74,9 +74,8 @@ function AllHabits() {
     const dispatch = useDispatch();
     // add short circuit 
     const [done, setDone] = useState(false);
-    // const [reload, setReload] = useState(0);
     // add reload state if necessary 
-    // const [reload, setReload] = useState(0);
+    const [reload, setReload] = useState(0);
     const [habits, setHabits] = useState([]);
     const [visHabits, setVisHabits] = useState([]);
     const [hiddenHabits, setHiddenHabits] = useState([]);
@@ -84,6 +83,7 @@ function AllHabits() {
     const [text, setText] = useState("show completed");      // toggle logic 
     // subscribe to habits slice of state 
     const habitState = useSelector((state) => state.habit.habits);
+    
 
     // define weekdays by time codes 
     const WEEKDAYS = new Map(); 
@@ -98,7 +98,7 @@ function AllHabits() {
     // dispatch to get-habits thunk to update state
     useEffect(() => {  // after first render
         dispatch(getAllHabits());
-    }, [dispatch]);
+    }, [dispatch, reload]);
 
     // additional useEffect for circuit help 
     useEffect(() => {
@@ -107,7 +107,7 @@ function AllHabits() {
             sortingHat(habits);
             setDone(true);
         }
-    }, [habitState, habits])
+    }, [habitState, habits, reload])
 
     // checkbox functionality (onClick function)
     function checkbox (habitId) {
@@ -188,7 +188,10 @@ function AllHabits() {
                         className='test-modal-button'
                         buttonText='Add a Habit'
                         modalComponent={
-                            <CreateHabitModal />
+                            <CreateHabitModal 
+                                reload={reload}
+                                setReload={setReload}
+                            />
                         }
                     />
                 </>

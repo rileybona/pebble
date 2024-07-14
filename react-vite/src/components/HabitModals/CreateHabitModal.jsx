@@ -1,15 +1,18 @@
-import { useState } from "react";
-// import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useModal } from '../../context/Modal'
-function CreateHabitModal() {
+import { createHabit } from "../../redux/habit"; 
+import './CreateHabitModal.css'
+
+function CreateHabitModal({ reload, setReload }) {
     // set states, react hooks, etc 
-    // const dispatch = useDispatch()
+    const dispatch = useDispatch()
     const { closeModal } = useModal();
+
     // form values 
     const [title, setTitle] = useState("");
     const [notes, setNotes] = useState(""); 
     const [recurranceType, setRecurranceType] = useState("Daily");
-    const [recurrs, setRecurrs] = useState(['sunday', 'monday','tuesday', 'wednesday','thursday', 'friday', 'saturday']);
 
     // weekday hooks for select recurrances
     const [monday, setMonday] = useState(true);
@@ -19,31 +22,57 @@ function CreateHabitModal() {
     const [friday, setFriday] = useState(true);
     const [saturday, setSaturday] = useState(true);
     const [sunday, setSunday] = useState(true);
+    // simplify validation logic for recurrance selections 
+    const oneDay = (monday || tuesday || wednesday || thursday || friday || saturday || sunday);
 
-
-
-    console.log("HERE WE ARE");
-
-
-
+    // errors & validations 
+    const [errors, setErrors] = useState({});
+    const [validationErrors, setValidationErrors] = useState({});
+    const [showErrors, setShowErrors] = useState(false);
 
     // useEffect for validations 
+    useEffect(() => {
+    
+        const errs = {};
+        if (title.length < 1) errs.title = "Please enter a title.";
+        if (title.length > 30) errs.title = "Habit title too long."; 
+        if (notes.length > 50) errs.notes = "Notes are too long.";
+        if (!oneDay) errs.recurrances = "You must select at least one recurring day for a weekly habit.";
 
-    // useEffect for dispatching 
+        setValidationErrors(errs);
+    }, [title, notes, oneDay])
+
+
+    // close modal func for 'cancel' 
+    const cancel = () => {
+        closeModal();
+    }
+
+
 
     // define handsubmit 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log('submitting!');
-        // const newHabit = {
-        //     user_id: 1, // PLEASE CHANGE lol
-        //     title: title,
-        //     notes: notes,
-        //     recurrance_type: recurranceType,
-        // }
+        e.preventDefault(); // prevent refresh & modal close 
+        setShowErrors(true); // display errors on submit attempt 
 
-        // console.log(newHabit);
-        closeModal();
+        // if there are not errors...
+        if (!Object.keys(validationErrors).length) {
+            // create habit 
+            const newHabit = {
+                title: title,
+                notes: notes,
+                recurrance_type: recurranceType,
+            }
+
+            setErrors({});
+            errors;
+
+            // dispatch habit to add-habit thunk -> db 
+            dispatch(createHabit(newHabit));
+            setReload(reload + 1);
+            closeModal();
+            // simulate click of tree open modal button 
+        }
     }
 
 
@@ -52,12 +81,15 @@ function CreateHabitModal() {
             <form onSubmit={handleSubmit} className="create-hab-form">
                 <div className="title-cancel-submit">
                     <h1>Add a Habit</h1>
-                    <button>cancel</button>
-                    <button>next</button> 
+                    <button onClick={() => cancel()}>cancel</button>
+                    <button type="submit">next</button> 
+                    {/* invisible open modal button  */}
                 </div>
                 <div className="primary-info">
                     <label>
-                        {/* errors logic */}
+                        {showErrors && validationErrors.title && (
+                            <p className="validation-error">{validationErrors.title}</p>
+                        )}
                         <p className="title-label">Title*</p>
                         <input 
                             type='text'
@@ -66,6 +98,9 @@ function CreateHabitModal() {
                         />
                     </label>
                     <label>
+                        {showErrors && validationErrors.notes && (
+                            <p className="validation-error">{validationErrors.notes}</p>
+                        )}
                         <p className="notes-label">Notes</p>
                         <input
                             type='text'
@@ -86,10 +121,13 @@ function CreateHabitModal() {
                 </label>
                 {(recurranceType == 'weekly') ? 
                     <label>
+                        {showErrors && validationErrors.recurrances && (
+                            <p className="validation-error">{validationErrors.recurrances}</p>
+                        )}
                         <p className="recurrs-label">Repeat Every</p>
                         <button onClick={(e) => {
                             e.preventDefault();
-                            setSunday(!sunday)}} className={`${sunday}`}>Sunday</button>
+                            setSunday(!sunday)}} className={`${sunday}`} id='dayButton'>Sunday</button>
                         <button onClick={(e) => {
                             e.preventDefault();
                             setMonday(!monday)}} className={`${monday}`}>Monday</button>
