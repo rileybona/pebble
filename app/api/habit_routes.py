@@ -70,6 +70,11 @@ def update_habit(habitId):
 def add_completion_to_habit(habitId):
     return jsonify(CompletionUtils.add_completion_to_habit(habitId))
 
+# remove a completion from a habit 
+@habit_routes.route('/<int:habitId>/completions', methods=['DELETE'])
+def remove_completion_from(habitId):
+    pass
+
 # delete a habit 
 @habit_routes.route('/<int:habitId>', methods=["DELETE"])
 @login_required

@@ -98,6 +98,10 @@
     background-color: rgb(224, 252, 224);
 }
 
+.checkbox:hover {
+    border: solid;
+}
+
 .hidden {
     visibility: hidden;
 }

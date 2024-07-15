@@ -84,6 +84,7 @@ function AllHabits() {
     const [hiddenHabits, setHiddenHabits] = useState([]);
     const [className, setClassName] = useState("hidden");    // for hiding habits completed or not due today 
     const [text, setText] = useState("show completed");      // toggle logic 
+
     // subscribe to habits slice of state 
     // const habitState = useSelector((state) => state.habit.habits);
     const dueState = useSelector((state) => state.habit.visible);
@@ -187,10 +188,19 @@ function AllHabits() {
         return (
             <div className='habits-page'>
                 <div className='habits-upper'>
-                    <button onClick={()=> alert("test")}>Add a Habit</button>
+                     <OpenModalButton 
+                        className='test-modal-button'
+                        buttonText='Add a Habit'
+                        modalComponent={
+                            <CreateHabitModal 
+                                reload={reload}
+                                setReload={setReload}
+                            />
+                        }
+                    />
                 </div>
             </div>
-        )
+        );
     } 
 
     return (
