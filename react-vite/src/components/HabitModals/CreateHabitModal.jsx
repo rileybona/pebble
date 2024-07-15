@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useModal } from '../../context/Modal'
 import { createHabit } from "../../redux/habit"; 
 import './CreateHabitModal.css'
@@ -11,7 +11,6 @@ function CreateHabitModal({ reload, setReload }) {
     const dispatch = useDispatch()
     const { closeModal } = useModal();
     const { setModalContent } = useModal();
-    const createdHabit = useSelector((state) => state.habit.habit_details);
 
     // form values 
     const [title, setTitle] = useState("");
@@ -71,14 +70,16 @@ function CreateHabitModal({ reload, setReload }) {
             // handle habit days!! 
 
             // dispatch habit to add-habit thunk -> db 
-            dispatch(createHabit(newHabit)).then(() => {
+            dispatch(createHabit(newHabit)).then((res) => {
                 setReload(reload + 1);
+
+                console.log(res);
 
                 // close modal 
                 closeModal();  
                 
                 // open tree modal with created habit's id 
-                setModalContent(<PlantTreeModal habitId={createdHabit.id}/>);
+                setModalContent(<PlantTreeModal habitId={res.id}/>);
           
             });          
         }
