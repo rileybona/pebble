@@ -139,7 +139,8 @@ export const createHabit = (data) => async (dispatch) => {
             const res = await response.json();
             // console.log("addHab thunk - response.json = ");
             // console.log(res);
-            return dispatch(addHabit(res));
+            dispatch(addHabit(res));
+            return res;
 
         } else {
             console.log("addHab thunk - fetch failed");
