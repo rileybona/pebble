@@ -21,6 +21,20 @@ class User(db.Model, UserMixin):
         cascade="all, delete-orphan"
     )
 
+    # create user > treeIP rel 
+    treeIP_users = db.relationship(
+        "Tree_in_progress",
+        backpopulates="user_treesIP",
+        cascade="all, delete-orphan"
+    )
+
+    # use > treeG rel
+    treeG_users = db.relationship(
+        "Tree_grown",
+        backpopulates="user_treesG",
+        cascade="all, delete-orphan"
+    )
+
     @property
     def password(self):
         return self.hashed_password

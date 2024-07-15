@@ -34,3 +34,10 @@ class Habit(db.Model):
         cascade="all, delete-orphan"
     )
 
+    # add habit > treesIP rel 
+    treeIP_habits = db.relationship(
+        "Tree_in_progress",
+        back_populates="habit_treesIP",
+        cascade="all, delete-orphan"
+    )
+
