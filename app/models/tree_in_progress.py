@@ -1,6 +1,8 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
+# from app.models import * 
+# from app.models.user import User 
 
-class Tree_in_progess(db.Model):
+class Tree_in_progress(db.Model):
     __tablename__ = 'trees_in_progress'
 
     if environment == "production":
