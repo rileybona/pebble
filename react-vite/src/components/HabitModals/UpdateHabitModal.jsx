@@ -5,7 +5,7 @@ import { useModal } from '../../context/Modal'
 import { useSelector } from 'react-redux';
 import { editHabit } from '../../redux/habit';
 import PlantTreeModal from './PlantTreeModal';
-
+import DeleteHabitModal from './DeleteHabitModal';
 
 function UpdateHabitModal({ habitId, reload, setReload}) {
     const { closeModal } = useModal();
@@ -59,7 +59,7 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
     // ADD DELETE FUNCTIONALITY
     const handleDelete = (e) => {
         e.preventDefault();
-        console.log("should delete now!");
+        setModalContent(<DeleteHabitModal habitId={habitId} reload={reload} setReload={setReload}/>)
     }
 
 
@@ -170,6 +170,9 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
                     </label> 
                 : <p></p>}
             </form>
+            <div className='delete-section'>
+                <button onClick={(e) => handleDelete(e)}>Delete This Habit</button>
+            </div>
         </>
     );
 }

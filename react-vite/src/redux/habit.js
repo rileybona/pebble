@@ -4,7 +4,9 @@ const GET_HABIT_DETAILS = '/habits/GET_HABIT_DETAILS';
 const ADD_HABIT_COMPLETION = 'habits/ADD_HABIT_COMPLETION';
 const ADD_HABIT = 'habits/ADD_HABIT';
 const UPDATE_HABIT = 'habits/UPDATE_HABIT';
-
+const DELETE_HABIT = 'habits/DELETE_HABIT';
+const GET_DUE_HABITS = 'habits/GET_DUE_HABITS';
+const GET_HIDDEN_HABITS = 'habits/GET_HIDDEN_HABITS';
 
 // define actions 
 const loadAllHabits = (habits) => {
@@ -42,8 +44,29 @@ const updateHabit = (habit) => {
     }
 }
 
+const deleteHabit = (habitId) => {
+    return {
+        type: DELETE_HABIT,
+        payload: habitId
+    }
+}
+
+const loadDueHabits = (habits) => {
+    return {
+        type: GET_DUE_HABITS,
+        payload: habits
+    }
+}
+
+const loadHiddenHabits = (habits) => {
+    return {
+        type: GET_HIDDEN_HABITS,
+        payload: habits
+    }
+}
+
 // THUNKS - - - - - - 
-// get all users habits 
+// get all user's habits 
 export const getAllHabits = () => async(dispatch) => {
     try {
         const response = await fetch("/api/habits");
@@ -58,6 +81,42 @@ export const getAllHabits = () => async(dispatch) => {
     } catch (err) {
         console.log(err);
         return err; 
+    }
+}
+
+// get visible / due habits 
+export const getDueHabits = () => async(dispatch) => {
+    try {
+        const response = await fetch('/api/habits/visible');
+
+        if (response.ok) {
+            const res = await response.json();
+            dispatch(loadDueHabits(res));
+        } else {
+            throw new Error("vis hab fetch failed.");
+        }
+
+    } catch (err) {
+        console.log(err)
+        return err;
+    }
+}
+
+// get invisible / checked habits 
+export const getHiddenHabits = () => async(dispatch) => {
+    try {
+        const response = await fetch('/api/habits/hidden');
+
+        if (response.ok) {
+            const res = await response.json();
+            dispatch(loadHiddenHabits(res));
+        } else {
+            throw new Error("hidden hab fetch failed.");
+        }
+
+    } catch (err) {
+        console.log(err);
+        return err;
     }
 }
 
@@ -120,9 +179,48 @@ export const editHabit = (details, habitId) => async (dispatch) => {
     }
 }
 
+export const deleteAHabit = (habitId) => async (dispatch) => {
+    try {
+        const options = {
+            method: "DELETE",
+        };
+        const response = await fetch(`/api/habits/${habitId}`, options);
+
+        if (response.ok) {
+            dispatch(deleteHabit(parseInt(habitId)));
+            return 1;
+        }
+    } catch(err) {
+        console.log(err);
+        return err;
+    }
+}
+
+// add a completion to a habit 
+export const markCompleted = (habitId) => async (dispatch) => {
+    try {
+        const options = {
+            method: "POST"
+        };
+        const response = await fetch(`api/habits/${habitId}/completions`, options);
+        
+        if (response.ok) {
+            const res = await response.json();
+            return dispatch(addCompletion(res));
+        } else {
+            throw new Error("completion fetch failed!");
+        }
+
+    } catch(err) {
+        console.log(err);
+        return (err);
+    }
+}
+
+
 // Reducer  - - - - - -
 const habitReducer = (
-    state = { habits: [], habit_details: {}},
+    state = { habits: [], habit_details: {}, visible: [], hidden: []},
     action
 ) => {
     switch (action.type) {
@@ -136,6 +234,26 @@ const habitReducer = (
         case ADD_HABIT: {
             state.habit_details = action.payload;
             return state
+        }
+        case DELETE_HABIT: {
+            if (state.habits[action.habitId]) {
+                delete state.habits[action.habitId]
+            }
+            return state;
+        }
+        case GET_DUE_HABITS: {
+            const visible = [];
+            action.payload.map((habit, i) => {
+                visible[i] = habit;
+            });
+            return { ...state, visible }
+        }
+        case GET_HIDDEN_HABITS: {
+            const hidden = [];
+            action.payload.map((habit, i) => {
+                hidden[i] = habit;
+            });
+            return { ...state, hidden }
         }
         default:
             return state;

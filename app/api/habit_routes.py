@@ -11,6 +11,18 @@ habit_routes = Blueprint("habits", __name__)
 def get_my_habits():
     return HabitUtils.get_all_habits()
 
+# get visible habits to display 
+@habit_routes.route('/visible')
+@login_required
+def get_visible_habits():
+    return HabitUtils.get_display_habits()
+
+# get hidden habit to hide 
+@habit_routes.route('/hidden')
+@login_required
+def get_hidden_habits():
+    return HabitUtils.get_hidden_habits()
+
 # get details of one habit by its id 
 @habit_routes.route('/<int:habitId>')
 @login_required
