@@ -1,0 +1,10 @@
+
+.create-hab-form button.true {
+    background-color: rgba(137, 43, 226, 0.557);
+    /* font-weight: bold; */
+}
+
+.validation-error {
+    color: red;
+    font-size: small;
+}

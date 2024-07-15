@@ -1,0 +1,76 @@
+div.main-content {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    padding-top: 20px;
+    background-color: rgba(245, 252, 233, 0.774);
+}
+
+#sidebar {
+    position: absolute;
+    left: 0px;
+}
+
+#sidebar li {
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+
+
+.splash-page {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.splash-left {
+    height: 100%;
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#spigot {
+    margin-top: 100px;
+    height: 450px;
+    margin-right: 500px;
+    /* position: absolute; */
+    /* left: 50px; */
+    /* bottom: 30px; */
+    z-index: 0;
+    /* overflow-y: hidden; */
+}
+
+
+.splash-right {
+    height: 100%;
+    /* background-color: blue; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+
+.splash-right p {
+    margin-top: 100px;
+}
+
+#pebtower {
+    height: 200px;
+    margin-right: 200px;
+    /* margin-right: 100px; */
+
+}
+
+.welcome-page {
+    margin-left: 300px;
+}
+
+.welcome-page h3 {
+    color: grey;
+}

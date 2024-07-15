@@ -11,6 +11,18 @@ habit_routes = Blueprint("habits", __name__)
 def get_my_habits():
     return HabitUtils.get_all_habits()
 
+# get visible habits to display 
+@habit_routes.route('/visible')
+@login_required
+def get_visible_habits():
+    return HabitUtils.get_display_habits()
+
+# get hidden habit to hide 
+@habit_routes.route('/hidden')
+@login_required
+def get_hidden_habits():
+    return HabitUtils.get_hidden_habits()
+
 # get details of one habit by its id 
 @habit_routes.route('/<int:habitId>')
 @login_required
@@ -27,7 +39,7 @@ def post_new_habit():
     new_habit = HabitUtils.create_new_habit(req_body)
     if new_habit == 500: 
         return jsonify({"message": "Habit Creation Failed"}), 500
-    return new_habit, 201
+    return jsonify(new_habit), 201
 
 # add recurrances to a weekly habit 
 @habit_routes.route('/<int:habitId>/recurrances', methods=["POST"])

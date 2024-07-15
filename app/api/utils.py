@@ -19,7 +19,8 @@ class HabitUtils:
             "user_id": habit_obj.user_id,
             "title": habit_obj.title,
             "notes": habit_obj.notes,
-            "recurrance_type": habit_obj.recurrance_type
+            "recurrance_type": habit_obj.recurrance_type,
+            "created_at": habit_obj.created_at
         }
         try:
            return jsonable_obj
@@ -47,6 +48,72 @@ class HabitUtils:
 
         return all_habits
     
+    # GET VISIBLE HABITS TO DISPLAY 
+    @staticmethod
+    def day_helper(dayNum):
+        daymap = dict()
+        daymap[0] = "monday"
+        daymap[1] = "tuesday"
+        daymap[2] = "wednesday"
+        daymap[3] = "thursday"
+        daymap[4] = "friday"
+        daymap[5] = "saturday"
+        daymap[6] = "sunday"
+
+        day = daymap.get(dayNum)
+        print(day)
+        return day
+
+    @staticmethod
+    def get_display_habits():
+        """refactors all habits to visible habits """
+        # get all users habits 
+        all_habits = HabitUtils.get_all_habits()
+
+        # filter out any with completions today 
+        some_habits = []
+        today = datetime.today()
+        today = str(today.date())
+        for habit in all_habits:
+            if today not in habit["Completions"]:
+                some_habits.append(habit)
+      
+
+        # reduce to only Daily and Weekly due today 
+        display_habits = []
+        day = datetime.today()
+        day = day.weekday()
+
+        for habit in some_habits:
+            if (habit["recurrance_type"] == 'Daily'):
+                display_habits.append(habit)
+            if (habit["recurrance_type"] == 'weekly'):
+                today = HabitUtils.day_helper(day)
+                if (habit["Recurrances"][today]):
+                    display_habits.append(habit)
+        
+        # return display_habits
+        return display_habits
+
+    # GET HIDDEN HABITS
+    @staticmethod
+    def get_hidden_habits():
+        """return habits that are not due today or already checked off"""
+        all_habits = HabitUtils.get_all_habits()
+
+        visible_habits = HabitUtils.get_display_habits()
+
+        hidden_habits = []
+
+        for habit in all_habits: 
+            if habit not in visible_habits:
+                hidden_habits.append(habit)
+        
+        return hidden_habits
+
+    # CALCULATE STREAK HENNY 
+
+
     @staticmethod
     def get_habit_details(habitId):
         """returns details of one habit by its id"""
@@ -262,7 +329,9 @@ class CompletionUtils:
     # format completions as an array of dates 
     @staticmethod
     def parse_completion_data(completion_obj):
-        return completion_obj.completed_at
+        dateobj = completion_obj.completed_at
+        date = dateobj.date()
+        return str(date)
 
     # find completion data for a given habit 
     @staticmethod
@@ -270,7 +339,9 @@ class CompletionUtils:
         all_completions = Completion.query.filter(
             Completion.habit_id == habit_id
         ).all() 
+
         all_completions = [CompletionUtils.parse_completion_data(completion) for completion in all_completions]
+
         return all_completions
     
     @staticmethod 

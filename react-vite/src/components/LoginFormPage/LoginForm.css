@@ -1,0 +1,84 @@
+.login-card {
+    background-color: rgb(255, 255, 255);
+    border: solid, 1px, grey;
+    padding: 2em;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    /* height: 300px; */
+    margin-top: 60px;
+    padding-bottom: 1em;
+
+    position: absolute;
+}
+
+.login-card h1 {
+    margin-top: 0;
+    align-self: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.login-form label {
+    display: flex;
+    flex-direction: column;
+}
+
+.email {
+    margin-bottom: 15px;
+}
+
+.password {
+    margin-bottom: 20px;
+}
+
+.login-button {
+    /* border: solid, 1px, grey;
+    background-color: white;
+    border-radius: 8px; */
+    /* box-shadow: 10px, 5px, 5px, red !important; */
+
+    align-self: center;
+    width: fit-content;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    padding: 0.5em 1em;
+    border: 1px solid lightgrey;
+    border-radius: 1em;
+    font-size: 1em;
+    box-sizing: border-box;
+    cursor: pointer;
+    box-shadow: 0 0 5px lightgrey;
+    margin-bottom: 1em;
+}
+
+.login-footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-footer p {
+    margin: 0;
+    margin-top: 4px;
+
+    font-size: small;
+}
+
+.login-card .desc {
+    color: grey;
+}
+
+.login-card .create-account {
+    color: purple;
+}

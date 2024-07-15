@@ -1,7 +1,12 @@
+
+#modal-content {
+  border-radius: 8px;
+}
 form#signin-form {
     display: flex;
     flex-direction: column;
     padding: 2em;
+    border-radius: 8px;
     & h1 {
       text-align: center;
     }
