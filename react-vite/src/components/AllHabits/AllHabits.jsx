@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { getAllHabits, getDueHabits, getHiddenHabits, markCompleted } from '../../redux/habit'
+import { getAllHabits, getDueHabits, getHiddenHabits, markCompleted, removeCompleted } from '../../redux/habit'
 import OpenModalButton from "../OpenModalButton";
 import CreateHabitModal from '../HabitModals';
 import './AllHabits.css'
@@ -128,9 +128,11 @@ function AllHabits() {
         });
     }
 
-    // potentially uncheck a habit?
+    // uncheck a habit?
     function uncheck (habitId) {
-        alert(`coming soon - remove todays check from habit ${habitId}`);
+        dispatch(removeCompleted(habitId)).then(() => {
+            setReload(reload + 1);
+        });
     }
 
     // open edit modal (onClick function)

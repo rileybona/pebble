@@ -73,7 +73,7 @@ def add_completion_to_habit(habitId):
 # remove a completion from a habit 
 @habit_routes.route('/<int:habitId>/completions', methods=['DELETE'])
 def remove_completion_from(habitId):
-    pass
+    return CompletionUtils.remove_completion(habitId)
 
 # delete a habit 
 @habit_routes.route('/<int:habitId>', methods=["DELETE"])
