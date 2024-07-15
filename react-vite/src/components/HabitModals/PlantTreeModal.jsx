@@ -3,7 +3,7 @@
 function PlantTreeModal( {habitId} ) {
 
     return (
-        <h1>Plant Tree for habit: {habitId}</h1>
+        <h1>Plant Tree for habit: {habitId}?</h1>
     )
 }
 

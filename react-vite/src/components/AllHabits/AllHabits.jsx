@@ -4,6 +4,8 @@ import { getAllHabits } from '../../redux/habit'
 import OpenModalButton from "../OpenModalButton";
 import CreateHabitModal from '../HabitModals';
 import './AllHabits.css'
+import UpdateHabitModal from '../HabitModals/UpdateHabitModal';
+import { useModal } from '../../context/Modal';
 
 
 function dateArrToStrings(array) {
@@ -72,6 +74,7 @@ function calculateStreak(habit) {
 
 function AllHabits() {
     const dispatch = useDispatch();
+    const { setModalContent } = useModal();
     // add short circuit 
     const [done, setDone] = useState(false);
     // add reload state if necessary 
@@ -122,7 +125,8 @@ function AllHabits() {
 
     // open edit modal (onClick function)
     function openUpdate (habitId) {
-        alert(`opening update modal for habit ${habitId}`)
+        // alert(`opening update modal for habit ${habitId}`)
+        setModalContent(<UpdateHabitModal habitId={habitId} reload={reload} setReload={setReload}/>);
     }
 
     // open create modal (onClick function)

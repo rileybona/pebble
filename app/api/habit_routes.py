@@ -27,7 +27,7 @@ def post_new_habit():
     new_habit = HabitUtils.create_new_habit(req_body)
     if new_habit == 500: 
         return jsonify({"message": "Habit Creation Failed"}), 500
-    return new_habit, 201
+    return jsonify(new_habit), 201
 
 # add recurrances to a weekly habit 
 @habit_routes.route('/<int:habitId>/recurrances', methods=["POST"])

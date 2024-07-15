@@ -1,22 +1,26 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useModal } from '../../context/Modal'
-import { createHabit } from "../../redux/habit"; 
 import './CreateHabitModal.css'
-import PlantTreeModal from "./PlantTreeModal";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useModal } from '../../context/Modal'
+import { useSelector } from 'react-redux';
+import { editHabit } from '../../redux/habit';
+import PlantTreeModal from './PlantTreeModal';
 
 
-function CreateHabitModal({ reload, setReload }) {
-    // set states, react hooks, etc 
-    const dispatch = useDispatch()
+function UpdateHabitModal({ habitId, reload, setReload}) {
     const { closeModal } = useModal();
     const { setModalContent } = useModal();
-    const createdHabit = useSelector((state) => state.habit.habit_details);
+    const dispatch = useDispatch();
+
+    // find habit in question for pre-population 
+    const habits = useSelector((state) => state.habit.habits);
+    const currHabit = habits.find((h) => h.id == habitId);    
+    
 
     // form values 
-    const [title, setTitle] = useState("");
-    const [notes, setNotes] = useState(""); 
-    const [recurranceType, setRecurranceType] = useState("Daily");
+    const [title, setTitle] = useState(currHabit.title);
+    const [notes, setNotes] = useState(currHabit.notes); 
+    const [recurranceType, setRecurranceType] = useState(currHabit.recurrance_type);
 
     // weekday hooks for select recurrances
     const [monday, setMonday] = useState(true);
@@ -30,70 +34,77 @@ function CreateHabitModal({ reload, setReload }) {
     const oneDay = (monday || tuesday || wednesday || thursday || friday || saturday || sunday);
 
     // errors & validations 
-    const [errors, setErrors] = useState({});
+    // const [errors, setErrors] = useState({}); <- literally what is this for
     const [validationErrors, setValidationErrors] = useState({});
     const [showErrors, setShowErrors] = useState(false);
+
 
     // useEffect for validations 
     useEffect(() => {
     
         const errs = {};
-        if (title.length < 1) errs.title = "Please enter a title.";
+        if (title?.length < 1) errs.title = "Please enter a title.";
         if (title.length > 30) errs.title = "Habit title too long."; 
-        if (notes.length > 50) errs.notes = "Notes are too long.";
+        if (notes?.length > 50) errs.notes = "Notes are too long.";
         if (!oneDay) errs.recurrances = "You must select at least one recurring day for a weekly habit.";
 
         setValidationErrors(errs);
-    }, [title, notes, oneDay])
-
+    }, [title, notes, oneDay, reload])
 
     // close modal func for 'cancel' 
     const cancel = () => {
         closeModal();
     }
 
+    // ADD DELETE FUNCTIONALITY
+    const handleDelete = (e) => {
+        e.preventDefault();
+        console.log("should delete now!");
+    }
 
 
-    // define handsubmit 
-    const handleSubmit = async (e) => {
-        e.preventDefault(); // prevent refresh & modal close 
-        setShowErrors(true); // display errors on submit attempt 
-
-        // if there are not errors...
+    // handle form submit !! 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setShowErrors(true);
+        
         if (!Object.keys(validationErrors).length) {
-            // create habit 
-            const newHabit = {
+
+            console.log('dispatch to thunk')
+
+            const updatedHabit = {
                 title: title,
                 notes: notes,
-                recurrance_type: recurranceType,
+                recurrance_type: recurranceType
             }
+            // dispatch add recurrances if its weekly 
 
-            // handle habit days!! 
-
-            setErrors({});
-            errors;
-
-            // dispatch habit to add-habit thunk -> db 
-            dispatch(createHabit(newHabit)).then(() => {
+            // dispatch to update thunk 
+            dispatch(editHabit(updatedHabit, habitId)).then(() => {
                 setReload(reload + 1);
-                // close modal 
-                closeModal();
-                // open tree modal with created habit's id 
-                setModalContent(<PlantTreeModal habitId={createdHabit.id}/>);
-            });          
+            });
+
+            closeModal();
+            setModalContent(<PlantTreeModal habitId={habitId}/>);
         }
     }
 
+    // if (!currHabit) {
+    //     setReload(reload + 1);
+    //     return <h1>loading</h1>
+    // }
+
+    
 
     return (
         <>
             <form onSubmit={handleSubmit} className="create-hab-form">
                 <div className="title-cancel-submit">
-                    <h1>Add a Habit</h1>
+                    <h1>Edit</h1>
                     <button onClick={() => cancel()}>cancel</button>
                     <button type="submit">next</button> 
-                    {/* invisible open modal button  */}
                 </div>
+                <p>you will lose any plants growing for this habit!</p>
                 <div className="primary-info">
                     <label>
                         {showErrors && validationErrors.title && (
@@ -122,7 +133,8 @@ function CreateHabitModal({ reload, setReload }) {
                 
                 <label>
                     <p className="repeats-label">Repeats</p>
-                    <select onChange={(e) => setRecurranceType(e.target.value)}>
+                    <select onChange={(e) => setRecurranceType(e.target.value)} 
+                        defaultValue={recurranceType}>
                         <option key='Daily' value='Daily'>Daily</option>
                         <option key='Weekly' value='weekly'>Weekly</option>
                     </select>
@@ -159,7 +171,7 @@ function CreateHabitModal({ reload, setReload }) {
                 : <p></p>}
             </form>
         </>
-    )
+    );
 }
 
-export default CreateHabitModal;
+export default UpdateHabitModal;
