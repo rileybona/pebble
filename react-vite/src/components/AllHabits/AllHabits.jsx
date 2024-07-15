@@ -85,7 +85,7 @@ function AllHabits() {
     const [className, setClassName] = useState("hidden");    // for hiding habits completed or not due today 
     const [text, setText] = useState("show completed");      // toggle logic 
     // subscribe to habits slice of state 
-    const habitState = useSelector((state) => state.habit.habits);
+    // const habitState = useSelector((state) => state.habit.habits);
     const dueState = useSelector((state) => state.habit.visible);
     const hiddenState = useSelector((state) => state.habit.hidden);
 
@@ -108,8 +108,6 @@ function AllHabits() {
 
     // additional useEffect for circuit help 
     useEffect(() => {
-        let d1 = false;
-        let d2 = false;
 
         if (dueState.length > 0) {
             setHabits(dueState);
@@ -122,7 +120,7 @@ function AllHabits() {
     }, [dueState, habits, hiddenState, reload])
 
     // checkbox functionality (onClick function)
-    function checkbox (habitId, i, habit) {
+    function checkbox (habitId) {
         // alert(`checking off habit ${habitId}!`);
         dispatch(markCompleted(habitId)).then(() => {
             setReload(reload + 1);
@@ -215,7 +213,7 @@ function AllHabits() {
                 {habits.map((habit, i) => (
                     <div className='habit-card' key={i}>
                         <div className='checkbox-container'>
-                            <button className='checkbox' onClick={() => checkbox(habit.id, i, habit)}></button>
+                            <button className='checkbox' onClick={() => checkbox(habit.id)}></button>
                         </div>
                         <div className='habit-right' onClick={() => openUpdate(habit.id)}>
                             <div className='habit-content'>
