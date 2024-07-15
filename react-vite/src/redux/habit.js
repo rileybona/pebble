@@ -217,6 +217,25 @@ export const markCompleted = (habitId) => async (dispatch) => {
     }
 }
 
+// remove today's completion from a habit 
+export const removeCompleted = (habitId) => async () => {
+    try {
+        const options = {
+            method: "DELETE"
+        }; 
+        const response = await fetch(`/api/habits/${habitId}/completions`, options);
+
+        if (response.ok) {
+            const res = await response.json();
+            return res;
+        } else {
+            throw new Error("remove comp fetch failed.");
+        }
+    } catch (err) {
+        console.log(err);
+        return err;
+    }
+}
 
 // Reducer  - - - - - -
 const habitReducer = (

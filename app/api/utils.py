@@ -356,6 +356,30 @@ class CompletionUtils:
             return "failed to add completion"
         
         return CompletionUtils.parse_completion_data(new_completion)
+    
+    @staticmethod
+    def remove_completion(habit_id):
+        # get all completions for this habit
+        existing_completions = Completion.query.filter(
+            Completion.habit_id == habit_id
+        ).all()
+
+        # define today 
+        todays_completion = {}
+        today = datetime.today().date()
+
+        # find todays completion
+        for completion in existing_completions:
+            if (completion.completed_at.date() == today):
+                todays_completion = completion
+        
+        # delete it 
+        db.session.delete(todays_completion)
+        db.session.commit()
+        
+        return jsonify({"message": "deleted habit completion from today"})
+
+
 
 
 
