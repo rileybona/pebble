@@ -30,7 +30,7 @@ function CreateHabitModal({ reload, setReload }) {
     const oneDay = (monday || tuesday || wednesday || thursday || friday || saturday || sunday);
 
     // errors & validations 
-    const [errors, setErrors] = useState({});
+    // const [errors, setErrors] = useState({});
     const [validationErrors, setValidationErrors] = useState({});
     const [showErrors, setShowErrors] = useState(false);
 
@@ -70,16 +70,16 @@ function CreateHabitModal({ reload, setReload }) {
 
             // handle habit days!! 
 
-            setErrors({});
-            errors;
-
             // dispatch habit to add-habit thunk -> db 
             dispatch(createHabit(newHabit)).then(() => {
                 setReload(reload + 1);
+
                 // close modal 
-                closeModal();
+                closeModal();  
+                
                 // open tree modal with created habit's id 
                 setModalContent(<PlantTreeModal habitId={createdHabit.id}/>);
+          
             });          
         }
     }

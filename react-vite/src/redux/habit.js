@@ -123,7 +123,7 @@ export const getHiddenHabits = () => async(dispatch) => {
 // create a new habit 
 export const createHabit = (data) => async (dispatch) => {
     try {
-        console.log("~create thunk - data passed in as:", data);
+        // console.log("~create thunk - data passed in as:", data);
         // fetch to API - create habit from data
         const response = await fetch("/api/habits", {
             method: "POST",
@@ -134,11 +134,11 @@ export const createHabit = (data) => async (dispatch) => {
         });
 
         if (response.ok) {
-            console.log("create hab func-- fetch successful")
+            // console.log("create hab func-- fetch successful")
             // if success, add response obj to store 
             const res = await response.json();
-            console.log("addHab thunk - response.json = ");
-            console.log(res);
+            // console.log("addHab thunk - response.json = ");
+            // console.log(res);
             return dispatch(addHabit(res));
 
         } else {
