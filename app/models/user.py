@@ -2,7 +2,6 @@ from .db import db, environment, SCHEMA, add_prefix_for_prod
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
-
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
@@ -18,6 +17,20 @@ class User(db.Model, UserMixin):
     habit_users = db.relationship(
         "Habit",
         back_populates="user_habits",
+        cascade="all, delete-orphan"
+    )
+
+    # create user > treeIP rel 
+    treeIP_users = db.relationship(
+        "Tree_in_progress",
+        back_populates="user_treesIP",
+        cascade="all, delete-orphan"
+    )
+
+    # use > treeG rel
+    treeG_users = db.relationship(
+        "Tree_grown",
+        back_populates="user_treesG",
         cascade="all, delete-orphan"
     )
 
