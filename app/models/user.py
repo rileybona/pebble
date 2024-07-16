@@ -12,6 +12,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+    pebbles = db.Column(db.Integer, default=0)
 
     # create user > habits rel
     habit_users = db.relationship(

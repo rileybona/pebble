@@ -1,11 +1,11 @@
 from os import name 
-from app.models import db, Habit, Recurrance, Completion, User 
+from app.models import db, Habit, Recurrance, Completion, User, Tree_in_progress, Tree_grown
 from flask_login import current_user
 from flask import Response 
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import jsonify
 
-# FEATURE ONE UTILS done 
+# =============== HABIT UTILS ===================================== 
 
 class HabitUtils:
     """API Habit Utility Functions"""
@@ -381,6 +381,306 @@ class CompletionUtils:
 
 
 
+
+# =========== GARDEN UTILS ===============================================
+class GardenUtils:
+    # grab info by tree type
+    @staticmethod 
+    def tree_types(treetype):
+        # define Thale Cress 
+        thale = {
+            "requirements": 1,
+            "resiliance": 1,
+            "value": 1
+        }
+        
+        # define Pine 
+        pine = {
+            "requirements": 5,
+            "resiliance": 2,
+            "value": 10
+        }
+
+        # define rare one? 
+            # requirements - 21
+            # resiliance - 0
+
+        # create dict - key = type-string, val = type object 
+        type_dict = dict()
+        type_dict['Thale Cress'] = thale
+        type_dict['Pine'] = pine
+
+
+        # get value object by key == param treetype 
+        selected_type_obj = type_dict.get(treetype)
+
+        # return object.resiliance and object.values or just the object 
+        return selected_type_obj
+
+    # parse trees for API return 
+    @staticmethod 
+    def parse_treeIP(tree):
+        # main parse logic 
+        jsonable_obj = {
+            "id": tree.id,
+            "user_id": tree.user_id,
+            "habit_id": tree.habit_id,
+            "tree_type": tree.tree_type,
+            "status": tree.status,
+            "neglect": tree.neglect,
+            "completion_count": tree.completion_count,
+        }
+
+        # parse created at for simple calculations
+        created = tree.created_at
+        createdDate = created.date()
+        created_simple = str(createdDate)
+        jsonable_obj['created_at'] = created_simple
+
+        return jsonable_obj
+
+
+    # create a tree 
+    @staticmethod
+    def plant_tree(details, habitId):
+        """creates a new tree under current user"""
+        new_tree = Tree_in_progress(
+            user_id = AuthUtils.get_current_user()['id'],
+            habit_id = habitId,
+            tree_type = details["tree_type"]
+        )
+
+        try:
+            db.session.add(new_tree)
+            db.session.commit()
+            return GardenUtils.parse_treeIP(new_tree)
+        except:
+            return 500
+
+
+
+    # get trees in progress by user 
+    @staticmethod
+    def get_trees_in_progress():
+        """gets trees in progress & updates calculations"""
+        # define return array 
+        return_list = []
+        # get treesIP by user id 
+        user_id = AuthUtils.get_current_user()['id']
+        trees_in_progress = Tree_in_progress.query.filter(
+            Tree_in_progress.user_id == user_id
+        ).all()
+
+
+        # for each tree...
+        for tree in trees_in_progress:
+            # parse tree ?
+            parsed_tree = GardenUtils.parse_treeIP(tree)
+
+            # get habit associated with tree 
+            habit = HabitUtils.get_habit_details(tree.habit_id)
+
+            # add 'habit title' to tree 
+            parsed_tree['habit_title'] = habit["title"]
+            
+
+            # calculate neglect (created to yesterday)
+            created_at = parsed_tree['created_at']
+            this_day = datetime.today()
+            today = datetime.strftime(this_day, "%Y-%m-%d")
+            today = datetime.strptime(today, "%Y-%m-%d")
+
+            # -- yesterday = today - timedelta(days=1)
+            # parsed_tree['today'] = today
+            start = datetime.strptime(created_at, "%Y-%m-%d")
+            # parsed_tree['start'] = start
+            # print("START: ", start)
+            date_list = []
+            neglect_count = 0      #  must start fresh for each calc
+            completion_count = 0   #  must start fresh for each calc
+
+            delta = today - start
+            delta = int(delta.days)
+            # parsed_tree['delta'] = str(delta)
+            # parsed_tree['daysdelta'] = str(num_days)
+
+            # -- reverse order list of days yesterday -> created
+            days = [this_day - timedelta(days=i) for i in range(1, delta + 1)]
+            parsed_days = [datetime.strftime(date, "%Y-%m-%d") for date in days]    
+            date_list = parsed_days[::-1]
+            parsed_tree['possible_dates'] = date_list
+            parsed_tree['completion_dates'] = habit["Completions"]
+
+            # -- for each day in possible days... 
+            for day in date_list:
+                # if day in habit completions
+                if day in habit["Completions"]:
+                    # increment completion count 
+                    completion_count += 1
+                # else increment neglect count 
+                if day not in habit["Completions"]:
+                    neglect_count += 1
+
+            # -- add Neglect to return (and completion count for now)
+            parsed_tree['completion_count'] = int(completion_count)
+            parsed_tree['neglect'] = int(neglect_count)
+
+            # -- update treeIP db to reflect new calculation 
+            tree.completion_count = completion_count
+            tree.neglect = neglect_count
+            db.session.commit()
+        
+
+            # source 'resiliance' & 'requirements' from tree type helper 
+            treetype = parsed_tree['tree_type']
+            treetype_obj = GardenUtils.tree_types(treetype)
+            resiliance = treetype_obj['resiliance']
+            requirements = treetype_obj['requirements']
+            parsed_tree['resiliance'] = resiliance
+            parsed_tree['requirements'] = requirements
+
+
+            # calculate growth (completions createdAt to today / requirements from treetype) [return 1 if grown]
+            growth = ''
+            if (completion_count == requirements):
+                growth = '1'
+            else:
+                growth = f"{completion_count}/{requirements}"
+            parsed_tree['growth'] = growth
+
+            # calculate status, update if necessary 
+            status = 'Alive'
+            if (neglect_count > resiliance):
+                status = "Dead."
+                tree.status = "Dead."
+                db.session.commit()
+            parsed_tree['status'] = status
+
+            # add object to return array 
+            return_list.append(parsed_tree)
+
+        # return return array 
+        return return_list
+
+
+
+
+    # complete a tree
+    @staticmethod
+    def complete_tree(treeId):
+        # find tree in progress 
+        tree = Tree_in_progress.query.filter(
+            Tree_in_progress.id == treeId
+        ).first() 
+
+        # find its associated habit 
+        habit = Habit.query.filter(
+            Habit.id == tree.habit_id
+        ).first()
+
+        # create new tree_grown object using tree info & associated habit 
+        new_grown_tree = Tree_grown(
+            user_id = AuthUtils.get_current_user()['id'],
+            tree_type = tree.tree_type,
+            habit_name = habit.title
+        )
+
+        # add to db  - TO-DO: add try/except block?
+        # TO DO validate user owns this tree 
+        db.session.add(new_grown_tree)
+        db.session.commit()
+
+        # delete tree in progress from db 
+        db.session.delete(tree)
+        db.session.commit()
+
+        return jsonify({"message": "deleted treeIP. Added to Grown"})
+
+
+    # delete a dead tree 
+    @staticmethod
+    def delete_dead_tree(treeId):
+        # find tree in progress
+        tree = Tree_in_progress.query.filter(
+            Tree_in_progress.id == treeId
+        ).first() 
+
+        # confirm is dead ?
+        if not (tree.status == "Dead."):
+            return 500
+        
+        db.session.delete(tree)
+        db.session.commit()
+
+        return jsonify({"message": "successfully deleted tree"})
+    
+    # grown tree parse 
+    @staticmethod
+    def parse_grown_tree(tree):
+        jsonable_obj = {
+            "id": tree.id,
+            "user_id": tree.user_id, 
+            "tree_type": tree.tree_type,
+            "habit_name": tree.habit_name,
+            "completed_at": tree.completed_at
+        }
+        return jsonable_obj
+
+
+    # get grown trees by user 
+    @staticmethod
+    def get_grown_trees():
+        return_list = []
+        # find grown trees where user_id == current user 
+        trees = Tree_grown.query.filter(
+            Tree_grown.user_id == AuthUtils.get_current_user()['id']
+        ).all()
+
+        # for each grown tree
+        for tree in trees:
+            # parse tree obj for return 
+            parsed_tree = GardenUtils.parse_grown_tree(tree)
+
+            # get treetype obj - grab 'value' 
+            treetype_obj = GardenUtils.tree_types(tree.tree_type)
+            value = treetype_obj['value']
+            parsed_tree['value'] = value
+
+            # append parsed tree to return list 
+            return_list.append(parsed_tree)
+            
+        # return array of grown trees 
+        return return_list
+
+    # sell / delete a grown tree 
+    @staticmethod
+    def sell_tree(treeId):
+        # find grown tree 
+        tree = Tree_grown.query.filter(
+            Tree_grown.id == treeId
+        ).first()
+
+        # find current user
+        current_user =  User.query.filter(
+            User.id == AuthUtils.get_current_user()['id']
+        ).first()
+
+        # get treetype obj - grab 'value' 
+        treetype_obj = GardenUtils.tree_types(tree.tree_type)
+        value = treetype_obj['value']
+
+        # add value to user.pebbles 
+        current_user.pebbles += value 
+
+        # delete tree from db 
+        db.session.delete(tree)
+        db.session.commit()
+
+        # return success msg 
+        return jsonify({"message": "tree sold!"})
+
+
+#  =========== AUTHUTILS ===================================================
 
 
 class AuthUtils:
