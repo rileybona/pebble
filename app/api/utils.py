@@ -330,8 +330,8 @@ class CompletionUtils:
     @staticmethod
     def parse_completion_data(completion_obj):
         dateobj = completion_obj.completed_at
-        date = dateobj.date()
-        return str(date)
+        date = datetime.strftime(dateobj, "%Y-%m-%d")
+        return date
 
     # find completion data for a given habit 
     @staticmethod
@@ -346,8 +346,10 @@ class CompletionUtils:
     
     @staticmethod 
     def add_completion_to_habit(habit_id):
+        today = datetime.today()
         new_completion = Completion(
-            habit_id = habit_id
+            habit_id = habit_id,
+            completed_at = today
         )
         try:
             db.session.add(new_completion)
@@ -364,13 +366,18 @@ class CompletionUtils:
             Completion.habit_id == habit_id
         ).all()
 
+        # existing_completions = [CompletionUtils.parse_completion_data(comp) for comp in existing_completions]
         # define today 
         todays_completion = {}
-        today = datetime.today().date()
+        today = datetime.strftime(datetime.today(), "%Y-%m-%d")
+
 
         # find todays completion
         for completion in existing_completions:
-            if (completion.completed_at.date() == today):
+            date = completion.completed_at
+            date = datetime.strftime(date, "%Y-%m-%d")
+
+            if (date == today):
                 todays_completion = completion
         
         # delete it 
@@ -485,9 +492,16 @@ class GardenUtils:
             
 
             # calculate neglect (created to yesterday)
+            date_list = []
+            neglect_count = 0      #  must start fresh for each calc
+            completion_count = 0   #  must start fresh for each calc
+
             created_at = parsed_tree['created_at']
             this_day = datetime.today()
             today = datetime.strftime(this_day, "%Y-%m-%d")
+            parsed_tree['today'] = today
+            if today in habit["Completions"]:    # handle today for completion count
+                completion_count += 1
             today = datetime.strptime(today, "%Y-%m-%d")
 
             # -- yesterday = today - timedelta(days=1)
@@ -495,10 +509,7 @@ class GardenUtils:
             start = datetime.strptime(created_at, "%Y-%m-%d")
             # parsed_tree['start'] = start
             # print("START: ", start)
-            date_list = []
-            neglect_count = 0      #  must start fresh for each calc
-            completion_count = 0   #  must start fresh for each calc
-
+      
             delta = today - start
             delta = int(delta.days)
             # parsed_tree['delta'] = str(delta)
@@ -586,13 +597,16 @@ class GardenUtils:
         )
 
         # add to db  - TO-DO: add try/except block?
-        # TO DO validate user owns this tree 
-        db.session.add(new_grown_tree)
-        db.session.commit()
+        try:
+            # TO DO validate user owns this tree 
+            db.session.add(new_grown_tree)
+            db.session.commit()
 
-        # delete tree in progress from db 
-        db.session.delete(tree)
-        db.session.commit()
+            # delete tree in progress from db 
+            db.session.delete(tree)
+            db.session.commit()
+        except:
+            return 500 
 
         return jsonify({"message": "deleted treeIP. Added to Grown"})
 
@@ -670,7 +684,9 @@ class GardenUtils:
         value = treetype_obj['value']
 
         # add value to user.pebbles 
-        current_user.pebbles += value 
+        if not (isinstance(current_user.pebbles, int)):
+            current_user.pebbles = value
+        else: current_user.pebbles += value 
 
         # delete tree from db 
         db.session.delete(tree)

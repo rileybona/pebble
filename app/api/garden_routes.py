@@ -26,15 +26,29 @@ def get_trees_inProgress():
 
 
 # delete a dead tree
+@garden_routes.route('/progress/<int:treeId>', methods=['DELETE'])
+@login_required
+def delete_dead_tree(treeId):
+    return GardenUtils.delete_dead_tree(treeId)
 
 
 # add finished tree to 'my garden' 
-
+@garden_routes.route('/progress/<int:treeId>/complete', methods=["DELETE"])
+@login_required
+def add_tree_to_garden(treeId):
+    return GardenUtils.complete_tree(treeId)
 
 
 # ======== my garden routes ===========
 
 #  Get all grown trees 
-
+@garden_routes.route('')
+@login_required
+def get_all_grown_trees():
+    return GardenUtils.get_grown_trees()
 
 #  sell / delete a grown tree 
+@garden_routes.route('/<int:treeId>', methods=["DELETE"])
+@login_required
+def sell_grown_tree(treeId):
+    return GardenUtils.sell_tree(treeId)
