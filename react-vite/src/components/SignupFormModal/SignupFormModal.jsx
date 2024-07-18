@@ -15,7 +15,7 @@ function SignupFormModal() {
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
   const [valErrors, setValErrors] = useState({}); 
-  const [showValErrs, setShowValErrs] = useState('hidden');
+  const [showValErrs, setShowValErrs] = useState('secret');
 
 
   useEffect(() => {
@@ -50,7 +50,7 @@ function SignupFormModal() {
     e.preventDefault();
 
     if (Object.keys(valErrors).length > 0) {
-      setShowValErrs('visible');
+      setShowValErrs('seen');
       return
     }
     

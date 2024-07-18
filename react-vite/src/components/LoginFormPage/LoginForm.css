@@ -121,13 +121,14 @@
 }
 
 
-.login-card .hidden {
+.secret {
     color: white;
     margin: 0;
 }
 
-.login-card .visible {
+.seen {
     color: red;
     margin: 0;
+    padding-bottom: 0;
     margin-left: 15px;
 }

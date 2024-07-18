@@ -20,6 +20,11 @@ form#signup-form {
     border: 1px solid lightgrey;
     border-radius: 0.3em;
   }
+
+  #signup-form h1 {
+    margin: 0;
+    margin-bottom: 2px;
+  }
   
   #signup-button {
     align-self: center;

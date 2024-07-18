@@ -17,7 +17,7 @@ function LoginFormPage() {
   const [errors, setErrors] = useState({});
 
   const [validationErrors, setValidationErrors] = useState({});
-  const [showValErrs, setShowValErrs] = useState("hidden"); 
+  const [showValErrs, setShowValErrs] = useState("secret"); 
 
   // useEffect for validations 
   useEffect(() => {
@@ -46,7 +46,7 @@ function LoginFormPage() {
     e.preventDefault();
 
     if (Object.values(validationErrors).length > 0 ) {
-        setShowValErrs('visible'); 
+        setShowValErrs('seen'); 
         return;
     }
 
