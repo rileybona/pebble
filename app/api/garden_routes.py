@@ -36,7 +36,10 @@ def delete_dead_tree(treeId):
 @garden_routes.route('/progress/<int:treeId>/complete', methods=["DELETE"])
 @login_required
 def add_tree_to_garden(treeId):
-    return GardenUtils.complete_tree(treeId)
+    res = GardenUtils.complete_tree(treeId)
+    if res == 500:
+        return {"message": "API db delete / add error"}
+    else: return res
 
 
 # ======== my garden routes ===========

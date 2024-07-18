@@ -608,7 +608,7 @@ class GardenUtils:
         except:
             return 500 
 
-        return jsonify({"message": "deleted treeIP. Added to Grown"})
+        return {"message": "deleted treeIP. Added to Grown"}
 
 
     # delete a dead tree 
@@ -636,8 +636,10 @@ class GardenUtils:
             "user_id": tree.user_id, 
             "tree_type": tree.tree_type,
             "habit_name": tree.habit_name,
-            "completed_at": tree.completed_at
         }
+        date = tree.completed_at
+        date = datetime.strftime(date, "%Y-%m-%d")
+        jsonable_obj["completed_at"] = date
         return jsonable_obj
 
 

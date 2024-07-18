@@ -1,3 +1,72 @@
 .garden-progress-page {
-    margin-left: 200px;
+    margin-left: 25vw;
+    box-sizing: border-box;
 }
+
+/* .progress_card {
+    display: flex;
+    flex-direction: row;
+    color: red;
+} */
+
+.card-dead {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 30px;
+
+    background-color: white;
+    width: 50vw;
+}
+
+
+.card-grown {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 30px;
+
+    background-color: white;
+    width: 50vw;
+}
+
+.card-progress {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 30px;
+
+    background-color: white;
+    width: 50vw;
+}
+.infoTag {
+    text-align: center;
+}
+.infoTag p {
+    margin: 0;
+}
+
+.nav-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#otherPage {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+

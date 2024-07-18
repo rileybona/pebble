@@ -14,6 +14,13 @@ const loadTreesIP = (trees) => {
     }
 }
 
+const loadTreesGrown = (trees) => {
+    return {
+        type: GET_TREES_GROWN,
+        payload: trees
+    }
+}
+
 // const loadTreesGrown = (trees) => {
 //     return {
 //         type: GET_TREES_GROWN,
@@ -21,7 +28,7 @@ const loadTreesIP = (trees) => {
 //     }
 // }
 
-const removeTree = (tree) => {
+const sellTree = (tree) => {
     return {
         type: DELETE_TREE,
         payload: tree
@@ -81,15 +88,40 @@ export const get_trees_ip = () => async(dispatch) => {
 
 }
 
+// DELETE dead treesIP 
+export const deleteDeadTree = (treeId) => async() => {
+    try {
+        const options = {
+            method: "DELETE",
+        }; 
+        const response = await fetch(`/api/garden/progress/${treeId}`, options);
+
+        if (response.ok) {
+            return "hurray!"
+            // dispatch(removeTree(treeId))
+        } else {
+            throw new Error('failed fetch to delete dead tree.')
+        }
+
+    } catch(err) {
+        console.log(err);
+        return err;
+    }
+}
+
 
 // DELETE fully grown treeIP --- send to grown 
-export const complete_tree = (treeId) => async(dispatch) => {
+export const complete_tree = (treeId) => async() => {
     try {
-        const response = await fetch(`/api/garden/progress/${treeId}/complete`);
+        const options = {
+            method: "DELETE",
+        }
+        const response = await fetch(`/api/garden/progress/${treeId}/complete`, options);
 
         if (response.ok) {
             const res = await response.json();
-            dispatch(removeTree(res));
+            return res;
+            // dispatch(removeTree(treeId))
         } else {
             throw new Error('delete treesIP fetch failed.')
         }
@@ -108,7 +140,7 @@ export const get_trees_grown = () => async(dispatch) => {
 
         if (response.ok) {
             const res = await response.json();
-            dispatch(removeTree(res));
+            dispatch(loadTreesGrown(res));
         } else {
             throw new Error('get grown trees fetch failed.')
         }
@@ -119,25 +151,54 @@ export const get_trees_grown = () => async(dispatch) => {
     }
 }
 
+// SELL a grown tree 
+export const sell_tree = (treeId) => async(dispatch) => {
+    try {
+        const options = {
+            method: "DELETE",
+        }
+        const response = await fetch(`/api/garden/${treeId}`, options);
+
+        if (response.ok) {
+            const res = await response.json(); 
+            dispatch(sellTree(treeId))
+            console.log("wohoo!", res); 
+        } else {
+            throw new Error("fetch to sell tree failed.")
+        }
+
+    } catch (err) {
+        console.log(err);
+        return err; 
+    }
+}
+
 // define reducer 
 const gardenReducer = (
-    state = {trees_IP: [], trees_grown: []},
+    state = { trees_IP: {}, trees_grown: []},
     action
 ) => {
     switch (action.type) {
         case GET_TREES_IP: {
-            const treesIP = [];
-            action.payload.map((tree, i) => {
-                treesIP[i] = tree;
+            const trees = [];
+            action.payload.forEach((tree) => {
+                trees.push(tree);
             });
-            return { ...state, treesIP}
+            const trees_IP = { trees }
+            // console.log("Redux ~ typeof trees: ", (typeof trees_IP.trees));
+            return { ...state, trees_IP}
         }          
         case GET_TREES_GROWN: {
-            const treesGrown = [];
+            const trees_grown = [];
             action.payload.map((tree, i) => {
-                treesGrown[i] = tree;
+                trees_grown[i] = tree;
             });
-            return { ...state, treesGrown}
+            return { ...state, trees_grown}
+        }
+        case DELETE_TREE: {
+            const trees_grown = state.trees_grown;
+            delete trees_grown[action.payload];
+            return { ...state, trees_grown}
         }
         default:
             return state
