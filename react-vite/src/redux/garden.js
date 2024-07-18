@@ -14,12 +14,12 @@ const loadTreesIP = (trees) => {
     }
 }
 
-const loadTreesGrown = (trees) => {
-    return {
-        type: GET_TREES_GROWN,
-        payload: trees
-    }
-}
+// const loadTreesGrown = (trees) => {
+//     return {
+//         type: GET_TREES_GROWN,
+//         payload: trees
+//     }
+// }
 
 const removeTree = (tree) => {
     return {
@@ -37,9 +37,18 @@ const addTree = (tree) => {
 
 // define thunks TO-DO ! ADD OPTIONS !! 
 // PLANT a new tree for a habit 
-export const plant_new_tree = (habitId) => async(dispatch) => {
+export const plant_new_tree = (habitId, treetype) => async(dispatch) => {
     try {
-        const response = await fetch(`/api/garden/${habitId}`);
+        const data = {
+            "tree_type": treetype
+        }
+        const response = await fetch(`/api/garden/${habitId}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        });
 
         if (response.ok) {
             const res = await response.json();
@@ -116,18 +125,20 @@ const gardenReducer = (
     action
 ) => {
     switch (action.type) {
-        case GET_TREES_IP: 
+        case GET_TREES_IP: {
             const treesIP = [];
             action.payload.map((tree, i) => {
                 treesIP[i] = tree;
             });
             return { ...state, treesIP}
-        case GET_TREES_GROWN:
+        }          
+        case GET_TREES_GROWN: {
             const treesGrown = [];
             action.payload.map((tree, i) => {
                 treesGrown[i] = tree;
             });
             return { ...state, treesGrown}
+        }
         default:
             return state
     }

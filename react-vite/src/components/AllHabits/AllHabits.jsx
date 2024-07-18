@@ -91,8 +91,8 @@ function AllHabits() {
     const hiddenState = useSelector((state) => state.habit.hidden);
 
     // define weekdays by time codes 
-    const WEEKDAYS = new Map(); 
-    WEEKDAYS.set(0, "sunday");
+    const WEEKDAYS = new Map();      // Legacy 
+    WEEKDAYS.set(0, 'sunday');
     WEEKDAYS.set(1, 'monday');
     WEEKDAYS.set(2, 'tuesday');
     WEEKDAYS.set(3, 'wednesday');
@@ -107,7 +107,7 @@ function AllHabits() {
         dispatch(getHiddenHabits());
     }, [dispatch, reload]);
 
-    // additional useEffect for circuit help 
+    // additional useEffect for circuit
     useEffect(() => {
 
         if (dueState.length > 0) {
@@ -128,7 +128,7 @@ function AllHabits() {
         });
     }
 
-    // uncheck a habit?
+    // uncheck a habit
     function uncheck (habitId) {
         dispatch(removeCompleted(habitId)).then(() => {
             setReload(reload + 1);
@@ -141,6 +141,7 @@ function AllHabits() {
         setModalContent(<UpdateHabitModal habitId={habitId} reload={reload} setReload={setReload}/>);
     }
 
+    // THE OLD WAYS
     // open create modal (onClick function)
     // function openCreate() {
     //     alert('open add habit modal');

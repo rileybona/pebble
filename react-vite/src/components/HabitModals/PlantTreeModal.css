@@ -1,0 +1,120 @@
+.plant-tree-modal {
+    width: 80vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+}
+.plant-tree-upper {
+    width: 100%;
+    background-color: rgb(224, 252, 224);
+    border: solid, 1px, rgb(224, 252, 224);
+    border-radius: 8px;
+    margin-bottom: 5px;
+    padding-left: 10px; 
+    box-sizing: border-box;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.title-save {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.title-save button {
+    align-self:flex-end;
+    margin-right: 5px;
+    margin-top: 5px;
+}
+
+.title-save h3 {
+    align-self: center;
+    margin: 0;
+    margin-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.yes-no {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.yes {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.yes p {
+    padding-left: 4px;
+}
+
+.no {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.no p {
+    padding-left: 4px;
+}
+
+button#save {
+    background-color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+    margin-right: 10px;
+    box-shadow: 0 0 5px lightgrey;
+}
+
+button#save:hover {
+    box-shadow: none;
+    background-color: lightgrey;
+}
+
+
+.visible {
+    width: 100%;
+}
+
+#plant-tree-lower {
+    padding: 20px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.labeltype {
+    width: 100%;
+    margin: 0;
+    margin-bottom: 5px;
+}
+.plant-form {
+    width: 100%;
+    height: 28px;
+}
+
+.select-treetype {
+    width: 100%;
+    height: 28px;
+    margin-bottom: 10px;
+}
+
+@media screen and (min-width: 740px) {
+    .plant-tree-modal {
+        width: 600px;
+    }
+}

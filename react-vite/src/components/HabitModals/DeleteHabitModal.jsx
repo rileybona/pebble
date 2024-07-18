@@ -16,11 +16,15 @@ function DeleteHabitModal({ habitId, reload, setReload }) {
         closeModal();
     }
 
+    const cancel = () => {
+        closeModal();
+    }
+
 
     return (
         <>
             <h1>ya wanna delete yer habit?</h1>
-            <button>Cancel</button>
+            <button onClick={() => cancel()}>Cancel</button>
             <button className='delete-it' onClick={(e) => handleDelete(e)}>Delete!</button>
         </>
     )
