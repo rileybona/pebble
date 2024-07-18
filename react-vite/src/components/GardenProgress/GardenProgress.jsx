@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { complete_tree, deleteDeadTree, get_trees_ip } from "../../redux/garden";
 
-
+import TypeImage from "../TreeTypes/typeImage";
 
 
 function GardenProgress() {
@@ -53,7 +53,7 @@ function GardenProgress() {
         if (tree.status == "Dead.") {
             return (
                 <div className="card-dead">
-                    <p>dead-icon</p>
+                    <TypeImage type={"dead"}/>
                     <h4>{tree.tree_type}</h4>
                     <p>&quot;{tree.habit_title}&quot;</p>
                     <p>{tree.status}</p>
@@ -66,7 +66,7 @@ function GardenProgress() {
         if (tree.growth == "1") {
             return (
                 <div className="card-grown">
-                    <p>grown-icon</p>
+                    <TypeImage type={tree.tree_type} />
                     <h4>{tree.tree_type}</h4>
                     <p>&quot;{tree.habit_title}&quot;</p>
                     <p>Fully Grown!</p>
@@ -78,7 +78,7 @@ function GardenProgress() {
         // else if in progress 
         else return (
             <div className="card-progress">
-                    <p>sprout-icon</p>
+                    <TypeImage type="sprout" id='test'/>
                     <h4>{tree.tree_type}</h4>
                     <p>&quot;{tree.habit_title}&quot;</p>
                     <div className="infoTag">

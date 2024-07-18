@@ -67,7 +67,7 @@ function CreateHabitModal({ reload, setReload }) {
                 recurrance_type: recurranceType,
             }
 
-            // handle habit days!!         NEED ASSISTANCE 
+            // handle habit days!!       
             const habitDays = {
                 "monday": monday,
                 "tuesday": tuesday,
@@ -77,12 +77,7 @@ function CreateHabitModal({ reload, setReload }) {
                 "saturday": saturday,
                 "sunday": sunday
             }
-
-            // const package = {
-            //     "habit": newHabit,
-            //     "recurs": habitDays
-            // }
-
+            
             // dispatch habit to add-habit thunk -> db 
             dispatch(createHabit(newHabit)).then((res) => {
                 setReload(reload + 1);

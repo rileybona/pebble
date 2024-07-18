@@ -6,7 +6,8 @@ import { get_trees_grown } from "../../redux/garden";
 import TreeTypes from "../TreeTypes/TreeTypes";
 import SellModal from "./sellModal";
 import OpenModalButton from "../OpenModalButton";
-
+import { thunkAuthenticate } from "../../redux/session";
+import TypeImage from "../TreeTypes/typeImage";
 
 function MyGarden() {
     const dispatch = useDispatch();
@@ -18,6 +19,7 @@ function MyGarden() {
 
     useEffect(() => {
         dispatch(get_trees_grown())
+        dispatch(thunkAuthenticate())
     }, [dispatch, reload]);
 
     useEffect(() => {
@@ -52,7 +54,7 @@ function MyGarden() {
             <div className="garden-main">
                 {trees.map((tree, i) => (
                     <div className="grown-card" key={i}>
-                        <img src={TreeTypes(tree.tree_type).url} id='grownImage'/>
+                        <TypeImage type={tree.tree_type} />
                         <div className="toolTip">
                             <h1>{tree.tree_type}</h1>
                             <p className="date">completed: {tree.completed_at}</p>

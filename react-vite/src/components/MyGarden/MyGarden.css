@@ -15,11 +15,12 @@
     max-width: 120px;
 }
 
-#grownImage {
+.grown-card .preview-image {
     height: 100px;
     border-radius: 100%;
-}
 
+    box-shadow: 1px 1px 3px rgb(27, 24, 24);
+}
 .toolTip {
     visibility: hidden;
     position: absolute;

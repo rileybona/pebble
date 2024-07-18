@@ -1,5 +1,7 @@
 import './TreeTypeSelect.css'
 import TreeTypes from '../TreeTypes/TreeTypes';
+import TypeImage from '../TreeTypes/typeImage';
+
 function TreeTypeSelect ({treetype}) {
     // grab treetype object 
     const typeObj = TreeTypes(treetype);
@@ -34,7 +36,7 @@ function TreeTypeSelect ({treetype}) {
     return (
         <div className='type-info'>
             <div className='type-info-top'>
-                <img className='tree-preview-img' src={typeObj.url} />
+                <TypeImage type={treetype}/>
                 <div className='name-quote'>
                     <h1>{treetype}</h1>
                     <p>{typeObj.quote}</p>

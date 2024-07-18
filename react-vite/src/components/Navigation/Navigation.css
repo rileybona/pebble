@@ -98,3 +98,10 @@ button#account-button {
   align-items: center;
 }
 
+.merchantilism {
+  position: absolute;
+  right: 120px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

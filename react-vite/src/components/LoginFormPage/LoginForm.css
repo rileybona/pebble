@@ -1,6 +1,7 @@
 .login-card {
     background-color: rgb(255, 255, 255);
-    border: solid, 1px, grey;
+    box-shadow: 2px 2px 4px rgb(126, 125, 125);
+    /* border: solid, 1px, grey; */
     padding: 2em;
     border-radius: 8px;
     display: flex;
