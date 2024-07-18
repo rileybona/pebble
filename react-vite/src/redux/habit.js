@@ -164,6 +164,8 @@ export const editHabit = (details, habitId) => async (dispatch) => {
             body: JSON.stringify(details),
         };
 
+
+
         // fetch to update API route 
         const response = await fetch(`/api/habits/${habitId}`, options);
 
@@ -177,6 +179,30 @@ export const editHabit = (details, habitId) => async (dispatch) => {
     } catch(err) {
         console.log(err);
         return err; 
+    }
+}
+
+export const addRecurranceData = (details, habitId) => async() => {
+    try{   
+        console.log("~addRec thunk ~ passing in details:", details)
+        const options = {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(details),
+        }
+        const response = await fetch(`/api/habits/${habitId}/recurrances`, options)
+        
+        if (response.ok) {
+            const res = await response.json();
+            console.log("fetch returns this data: ", res);
+        } else {
+            throw new Error("Add recurrance fetch failed.");
+        }
+    } catch (err) {
+        console.log(err) 
+        return(err);
     }
 }
 

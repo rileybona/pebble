@@ -22,11 +22,15 @@ function DeleteHabitModal({ habitId, reload, setReload }) {
 
 
     return (
-        <>
-            <h1>ya wanna delete yer habit?</h1>
-            <button onClick={() => cancel()}>Cancel</button>
-            <button className='delete-it' onClick={(e) => handleDelete(e)}>Delete!</button>
-        </>
+        <div className='deleteHab-modal'>
+            <h1>Are you sure you sure?</h1>
+            <p>deleting habits can&apos;t be undone!</p>
+            <div className='buttons'>
+                <button onClick={() => cancel()} id='cancelB'>Cancel</button>
+                <button className='delete-it' onClick={(e) => handleDelete(e)} id='deleteB'>Delete!</button>
+            </div>
+           
+        </div>
     )
 }
 

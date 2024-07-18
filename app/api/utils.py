@@ -36,15 +36,19 @@ class HabitUtils:
             Habit.user_id == userId
         ).all()
 
+        test = [] # DEBUGGING 
+
         all_habits = [HabitUtils.parse_habit_data(habit) for habit in all_habits]
         for habit in all_habits:
             # if habit is weekly, include which days it recurrs on 
             if (habit["recurrance_type"] == "weekly"):
                 habit_recurs = RecurranceUtils.get_recurrances_by_habit_id(habit["id"])[0]
-                habit["Recurrances"] = habit_recurs
+                if (habit_recurs == "No recurrance data found."): habit["Recurrances"] = {}
+                else: habit["Recurrances"] = habit_recurs
             # call for completions of this habit and attach data to return object 
             habit_completions = CompletionUtils.get_completions_by_habit_id(habit["id"])
             habit["Completions"] = habit_completions
+
 
         return all_habits
     
@@ -73,7 +77,7 @@ class HabitUtils:
         # filter out any with completions today 
         some_habits = []
         today = datetime.today()
-        today = str(today.date())
+        today = date = datetime.strftime(today, "%Y-%m-%d")
         for habit in all_habits:
             if today not in habit["Completions"]:
                 some_habits.append(habit)
@@ -81,18 +85,25 @@ class HabitUtils:
 
         # reduce to only Daily and Weekly due today 
         display_habits = []
+        weekly_habits = []
         day = datetime.today()
         day = day.weekday()
-
+        today = HabitUtils.day_helper(day)
+  
+        # testData = some_habits[1]["Recurrances"]
+        # return testData
+        # if testData['friday'] == True : return {"friday": "true"}
+        # else: return {"friday": "false"}
         for habit in some_habits:
             if (habit["recurrance_type"] == 'Daily'):
                 display_habits.append(habit)
             if (habit["recurrance_type"] == 'weekly'):
-                today = HabitUtils.day_helper(day)
-                if (habit["Recurrances"][today]):
+                days = habit["Recurrances"]
+                weekly_habits.append(habit)
+                if (today in days) and (days[today] == True):
                     display_habits.append(habit)
         
-        # return display_habits
+
         return display_habits
 
     # GET HIDDEN HABITS
@@ -273,48 +284,72 @@ class RecurranceUtils:
             Recurrance.habit_id == habitId
         ).first()
 
+
         # if habit in recurrances db, update that data
         if isinstance(habit_recurs, Recurrance):
-            if "monday" in details:
-                habit_recurs.monday = details['monday']
-            if "tuesday" in details:
-                habit_recurs.tuesday = details['tuesday']
-            if "wednesday" in details:
-                habit_recurs.wednesday = details['wednesday']
-            if "thursday" in details:
-                habit_recurs.thursday = details['thursday']
-            if "friday" in details:
-                habit_recurs.friday = details['friday']
-            if "saturday" in details:
-                habit_recurs.saturday = details['saturday']
-            if "sunday" in details:
-                habit_recurs.sunday = details['sunday']
+            if "monday" in details and (details["monday"] == True):
+                habit_recurs.monday = 1
+            else: habit_recurs.monday = 0
+            if "tuesday" in details and (details["tuesday"] == True):
+                habit_recurs.tuesday = 1
+            else: habit_recurs.tuesday = 0
+            if "wednesday" in details and (details["wednesday"] == True):
+                habit_recurs.wednesday = 1
+            else: habit_recurs.wednesday = 0
+            if "thursday" in details and (details["thursday"] == True):
+                habit_recurs.thursday = 1
+            else: habit_recurs.thursday = 0
+            if "friday" in details and (details["friday"] == True):
+                habit_recurs.friday = 1
+            else: habit_recurs.friday = 0
+            if "saturday" in details and (details["saturday"] == True):
+                habit_recurs.saturday = 1
+            else: habit_recurs.saturday = 0
+            if "sunday" in details and (details["sunday"] == True):
+                habit_recurs.sunday = 1
+            else: habit_recurs.sunday = 0
             
-            db.session.commit()
+            try:
+                db.session.commit()
+            except:
+                return 500
 
         #  if not in db, add new recurrance data 
         else:
             new_recurrances = Recurrance(
                 habit_id = habitId
             )
-            if "monday" in details:
-                new_recurrances.monday = details['monday']
-            if "tuesday" in details:
-                new_recurrances.tuesday = details['tuesday']
-            if "wednesday" in details:
-                new_recurrances.wednesday = details['wednesday']
-            if "thursday" in details:
-                new_recurrances.thursday = details['thursday']
-            if "friday" in details:
-                new_recurrances.friday = details['friday']
-            if "saturday" in details:
-                new_recurrances.saturday = details['saturday']
-            if "sunday" in details:
-                new_recurrances.sunday = details['sunday']
-            
             db.session.add(new_recurrances)
             db.session.commit()
-        
+
+            if "monday" in details and (details["monday"] == True):
+                new_recurrances.monday = 1
+            else: new_recurrances.monday = 0
+            if "tuesday" in details and (details["tuesday"] == True):
+                new_recurrances.tuesday = 1
+            else: new_recurrances.tuesday = 0
+            if "wednesday" in details and (details["wednesday"] == True):
+                new_recurrances.wednesday = 1
+            else: new_recurrances.wednesday = 0
+            if "thursday" in details and (details["thursday"] == True):
+                new_recurrances.thursday = 1
+            else: new_recurrances.thursday = 0
+            if "friday" in details and (details["friday"] == True):
+                new_recurrances.friday = 1
+            else: new_recurrances.friday = 0
+            if "saturday" in details and (details["saturday"] == True):
+                new_recurrances.saturday = 1
+            else: new_recurrances.saturday = 0
+            if "sunday" in details and (details["sunday"] == True):
+                new_recurrances.sunday = 1
+            else: new_recurrances.sunday = 0
+            
+            db.session.commit()
+            # try:
+
+               
+            # except:
+            #     return 500
         # get updated info 
         updated_recurrances = Recurrance.query.filter(
             Recurrance.habit_id == habitId

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from '../../context/Modal'
-import { createHabit } from "../../redux/habit"; 
+import { addRecurranceData, createHabit } from "../../redux/habit"; 
 import './CreateHabitModal.css'
 import PlantTreeModal from "./PlantTreeModal";
 
@@ -67,16 +67,33 @@ function CreateHabitModal({ reload, setReload }) {
                 recurrance_type: recurranceType,
             }
 
-            // handle habit days!! 
+            // handle habit days!!         NEED ASSISTANCE 
+            const habitDays = {
+                "monday": monday,
+                "tuesday": tuesday,
+                "wednesday": wednesday,
+                "thursday": thursday,
+                "friday": friday,
+                "saturday": saturday,
+                "sunday": sunday
+            }
+
+            // const package = {
+            //     "habit": newHabit,
+            //     "recurs": habitDays
+            // }
 
             // dispatch habit to add-habit thunk -> db 
             dispatch(createHabit(newHabit)).then((res) => {
                 setReload(reload + 1);
 
-                console.log(res);
 
+                dispatch(addRecurranceData(habitDays, res.id))
+                
                 // close modal 
                 closeModal();  
+
+
                 
                 // open tree modal with created habit's id 
                 setModalContent(<PlantTreeModal habitId={res.id}/>);
@@ -91,17 +108,19 @@ function CreateHabitModal({ reload, setReload }) {
             <form onSubmit={handleSubmit} className="create-hab-form">
                 <div className="title-cancel-submit">
                     <h1>Add a Habit</h1>
-                    <button onClick={() => cancel()}>cancel</button>
-                    <button type="submit">next</button> 
-                    {/* invisible open modal button  */}
+                    <div className="buttons">
+                        <button onClick={() => cancel()} id='cancelB'>cancel</button>
+                        <button type="submit" id='nextB'>next</button> 
+                    </div>
                 </div>
                 <div className="primary-info">
                     <label>
+                        <p className="title-label">Title*</p>
                         {showErrors && validationErrors.title && (
                             <p className="validation-error">{validationErrors.title}</p>
                         )}
-                        <p className="title-label">Title*</p>
                         <input 
+                            id='titleInput'
                             type='text'
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
@@ -131,10 +150,10 @@ function CreateHabitModal({ reload, setReload }) {
                 </label>
                 {(recurranceType == 'weekly') ? 
                     <label>
+                        <p className="recurrs-label">Repeat Every</p>
                         {showErrors && validationErrors.recurrances && (
                             <p className="validation-error">{validationErrors.recurrances}</p>
                         )}
-                        <p className="recurrs-label">Repeat Every</p>
                         <button onClick={(e) => {
                             e.preventDefault();
                             setSunday(!sunday)}} className={`${sunday}`} id='dayButton'>Sunday</button>

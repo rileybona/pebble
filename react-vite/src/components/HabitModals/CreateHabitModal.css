@@ -1,10 +1,82 @@
+.create-hab-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 
+    padding: 20px;
+    width: 40vw;
+}
+
+.title-cancel-submit {
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.title-cancel-submit h1 {
+    margin: 0;
+}
+
+#nextB:hover {
+    box-shadow: none;
+    background-color: rgba(121, 199, 153, 0.694);
+}
+
+.title-label {
+    /* position: relative; */
+    margin-bottom: 0;
+    margin-top: 20px;
+    /* bottom: 15px; */
+}
+
+p.validation-error {
+    margin-top: 0;
+}
+
+.create-hab-form button {
+    padding: 5px;
+    margin: 3px;
+    border: none;
+    box-shadow: 1px 1px 3px black;
+}
 .create-hab-form button.true {
-    background-color: rgba(137, 43, 226, 0.557);
+    /* background-color: rgba(137, 43, 226, 0.557); */
+    background-color: rgb(171, 227, 194);
     /* font-weight: bold; */
 }
 
 .validation-error {
     color: red;
     font-size: small;
+}
+
+.title-cancel-submit .buttons {
+    max-width: 150px;
+}
+
+.delete-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+
+#delete-hab {
+    padding: 11px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    color: rgb(221, 28, 28);
+    background-color: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 1px 1px 3px black;
+}
+
+#delete-hab:hover {
+    box-shadow: none;
+    background-color: rgba(226, 63, 63, 0.909);
+    color: white;
 }

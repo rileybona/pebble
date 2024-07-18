@@ -101,10 +101,13 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
             <form onSubmit={handleSubmit} className="create-hab-form">
                 <div className="title-cancel-submit">
                     <h1>Edit</h1>
-                    <button onClick={() => cancel()}>cancel</button>
-                    <button type="submit">next</button> 
+                    <div className='buttons'>
+                        <button onClick={() => cancel()} id='cancelB'>cancel</button>
+                        <button type="submit" id='nextB'>next</button> 
+                    </div>
+                   
                 </div>
-                <p>you will lose any plants growing for this habit!</p>
+                <p>warning: you will lose any plants growing for this habit!</p>
                 <div className="primary-info">
                     <label>
                         {showErrors && validationErrors.title && (
@@ -171,7 +174,7 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
                 : <p></p>}
             </form>
             <div className='delete-section'>
-                <button onClick={(e) => handleDelete(e)}>Delete This Habit</button>
+                <button onClick={(e) => handleDelete(e)} id='delete-hab'>Delete This Habit</button>
             </div>
         </>
     );
