@@ -3,16 +3,25 @@ import { thunkLogin } from "../../redux/session";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import "./LoginForm.css";
+import { useModal } from "../../context/Modal";
 
 function LoginFormPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { closeModal } = useModal();
   const sessionUser = useSelector((state) => state.session.user);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
   if (sessionUser) return <Navigate to="/" replace={true} />;
+
+  const loginDemo = (e) => {
+    e.preventDefault();
+    dispatch(thunkLogin({ email: "demo@aa.io", password: "password" }));
+    closeModal();
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,6 +71,9 @@ function LoginFormPage() {
           {errors.password && <p>{errors.password}</p>}
         </div>
         <button type="submit" className="login-button">Log In</button>
+        <button id="demo-user" onClick={loginDemo}>
+          Demo User
+        </button>
       </form>
       <div className="login-footer">
         <p className="desc">don&apos;t have an account?</p>

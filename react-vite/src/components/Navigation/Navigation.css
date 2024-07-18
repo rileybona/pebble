@@ -91,3 +91,10 @@ button#account-button {
   margin-right: 50px;
 }
 
+
+.logo-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
