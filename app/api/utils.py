@@ -1,11 +1,11 @@
 from os import name 
-from app.models import db, Habit, Recurrance, Completion, User 
+from app.models import db, Habit, Recurrance, Completion, User, Tree_in_progress, Tree_grown
 from flask_login import current_user
 from flask import Response 
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import jsonify
 
-# FEATURE ONE UTILS done 
+# =============== HABIT UTILS ===================================== 
 
 class HabitUtils:
     """API Habit Utility Functions"""
@@ -36,15 +36,19 @@ class HabitUtils:
             Habit.user_id == userId
         ).all()
 
+        test = [] # DEBUGGING 
+
         all_habits = [HabitUtils.parse_habit_data(habit) for habit in all_habits]
         for habit in all_habits:
             # if habit is weekly, include which days it recurrs on 
             if (habit["recurrance_type"] == "weekly"):
                 habit_recurs = RecurranceUtils.get_recurrances_by_habit_id(habit["id"])[0]
-                habit["Recurrances"] = habit_recurs
+                if (habit_recurs == "No recurrance data found."): habit["Recurrances"] = {}
+                else: habit["Recurrances"] = habit_recurs
             # call for completions of this habit and attach data to return object 
             habit_completions = CompletionUtils.get_completions_by_habit_id(habit["id"])
             habit["Completions"] = habit_completions
+
 
         return all_habits
     
@@ -73,7 +77,7 @@ class HabitUtils:
         # filter out any with completions today 
         some_habits = []
         today = datetime.today()
-        today = str(today.date())
+        today = date = datetime.strftime(today, "%Y-%m-%d")
         for habit in all_habits:
             if today not in habit["Completions"]:
                 some_habits.append(habit)
@@ -81,18 +85,25 @@ class HabitUtils:
 
         # reduce to only Daily and Weekly due today 
         display_habits = []
+        weekly_habits = []
         day = datetime.today()
         day = day.weekday()
-
+        today = HabitUtils.day_helper(day)
+  
+        # testData = some_habits[1]["Recurrances"]
+        # return testData
+        # if testData['friday'] == True : return {"friday": "true"}
+        # else: return {"friday": "false"}
         for habit in some_habits:
             if (habit["recurrance_type"] == 'Daily'):
                 display_habits.append(habit)
             if (habit["recurrance_type"] == 'weekly'):
-                today = HabitUtils.day_helper(day)
-                if (habit["Recurrances"][today]):
+                days = habit["Recurrances"]
+                weekly_habits.append(habit)
+                if (today in days) and (days[today] == True):
                     display_habits.append(habit)
         
-        # return display_habits
+
         return display_habits
 
     # GET HIDDEN HABITS
@@ -273,48 +284,72 @@ class RecurranceUtils:
             Recurrance.habit_id == habitId
         ).first()
 
+
         # if habit in recurrances db, update that data
         if isinstance(habit_recurs, Recurrance):
-            if "monday" in details:
-                habit_recurs.monday = details['monday']
-            if "tuesday" in details:
-                habit_recurs.tuesday = details['tuesday']
-            if "wednesday" in details:
-                habit_recurs.wednesday = details['wednesday']
-            if "thursday" in details:
-                habit_recurs.thursday = details['thursday']
-            if "friday" in details:
-                habit_recurs.friday = details['friday']
-            if "saturday" in details:
-                habit_recurs.saturday = details['saturday']
-            if "sunday" in details:
-                habit_recurs.sunday = details['sunday']
+            if "monday" in details and (details["monday"] == True):
+                habit_recurs.monday = 1
+            else: habit_recurs.monday = 0
+            if "tuesday" in details and (details["tuesday"] == True):
+                habit_recurs.tuesday = 1
+            else: habit_recurs.tuesday = 0
+            if "wednesday" in details and (details["wednesday"] == True):
+                habit_recurs.wednesday = 1
+            else: habit_recurs.wednesday = 0
+            if "thursday" in details and (details["thursday"] == True):
+                habit_recurs.thursday = 1
+            else: habit_recurs.thursday = 0
+            if "friday" in details and (details["friday"] == True):
+                habit_recurs.friday = 1
+            else: habit_recurs.friday = 0
+            if "saturday" in details and (details["saturday"] == True):
+                habit_recurs.saturday = 1
+            else: habit_recurs.saturday = 0
+            if "sunday" in details and (details["sunday"] == True):
+                habit_recurs.sunday = 1
+            else: habit_recurs.sunday = 0
             
-            db.session.commit()
+            try:
+                db.session.commit()
+            except:
+                return 500
 
         #  if not in db, add new recurrance data 
         else:
             new_recurrances = Recurrance(
                 habit_id = habitId
             )
-            if "monday" in details:
-                new_recurrances.monday = details['monday']
-            if "tuesday" in details:
-                new_recurrances.tuesday = details['tuesday']
-            if "wednesday" in details:
-                new_recurrances.wednesday = details['wednesday']
-            if "thursday" in details:
-                new_recurrances.thursday = details['thursday']
-            if "friday" in details:
-                new_recurrances.friday = details['friday']
-            if "saturday" in details:
-                new_recurrances.saturday = details['saturday']
-            if "sunday" in details:
-                new_recurrances.sunday = details['sunday']
-            
             db.session.add(new_recurrances)
             db.session.commit()
-        
+
+            if "monday" in details and (details["monday"] == True):
+                new_recurrances.monday = 1
+            else: new_recurrances.monday = 0
+            if "tuesday" in details and (details["tuesday"] == True):
+                new_recurrances.tuesday = 1
+            else: new_recurrances.tuesday = 0
+            if "wednesday" in details and (details["wednesday"] == True):
+                new_recurrances.wednesday = 1
+            else: new_recurrances.wednesday = 0
+            if "thursday" in details and (details["thursday"] == True):
+                new_recurrances.thursday = 1
+            else: new_recurrances.thursday = 0
+            if "friday" in details and (details["friday"] == True):
+                new_recurrances.friday = 1
+            else: new_recurrances.friday = 0
+            if "saturday" in details and (details["saturday"] == True):
+                new_recurrances.saturday = 1
+            else: new_recurrances.saturday = 0
+            if "sunday" in details and (details["sunday"] == True):
+                new_recurrances.sunday = 1
+            else: new_recurrances.sunday = 0
+            
+            db.session.commit()
+            # try:
+
+               
+            # except:
+            #     return 500
         # get updated info 
         updated_recurrances = Recurrance.query.filter(
             Recurrance.habit_id == habitId
@@ -330,8 +365,8 @@ class CompletionUtils:
     @staticmethod
     def parse_completion_data(completion_obj):
         dateobj = completion_obj.completed_at
-        date = dateobj.date()
-        return str(date)
+        date = datetime.strftime(dateobj, "%Y-%m-%d")
+        return date
 
     # find completion data for a given habit 
     @staticmethod
@@ -346,8 +381,10 @@ class CompletionUtils:
     
     @staticmethod 
     def add_completion_to_habit(habit_id):
+        today = datetime.today()
         new_completion = Completion(
-            habit_id = habit_id
+            habit_id = habit_id,
+            completed_at = today
         )
         try:
             db.session.add(new_completion)
@@ -364,13 +401,18 @@ class CompletionUtils:
             Completion.habit_id == habit_id
         ).all()
 
+        # existing_completions = [CompletionUtils.parse_completion_data(comp) for comp in existing_completions]
         # define today 
         todays_completion = {}
-        today = datetime.today().date()
+        today = datetime.strftime(datetime.today(), "%Y-%m-%d")
+
 
         # find todays completion
         for completion in existing_completions:
-            if (completion.completed_at.date() == today):
+            date = completion.completed_at
+            date = datetime.strftime(date, "%Y-%m-%d")
+
+            if (date == today):
                 todays_completion = completion
         
         # delete it 
@@ -381,6 +423,317 @@ class CompletionUtils:
 
 
 
+
+# =========== GARDEN UTILS ===============================================
+class GardenUtils:
+    # grab info by tree type
+    @staticmethod 
+    def tree_types(treetype):
+        # define Thale Cress 
+        thale = {
+            "requirements": 1,
+            "resiliance": 1,
+            "value": 1
+        }
+        
+        # define Pine 
+        pine = {
+            "requirements": 5,
+            "resiliance": 2,
+            "value": 10
+        }
+
+        # define rare one? 
+            # requirements - 21
+            # resiliance - 0
+
+        # create dict - key = type-string, val = type object 
+        type_dict = dict()
+        type_dict['Thale Cress'] = thale
+        type_dict['Pine'] = pine
+
+
+        # get value object by key == param treetype 
+        selected_type_obj = type_dict.get(treetype)
+
+        # return object.resiliance and object.values or just the object 
+        return selected_type_obj
+
+    # parse trees for API return 
+    @staticmethod 
+    def parse_treeIP(tree):
+        # main parse logic 
+        jsonable_obj = {
+            "id": tree.id,
+            "user_id": tree.user_id,
+            "habit_id": tree.habit_id,
+            "tree_type": tree.tree_type,
+            "status": tree.status,
+            "neglect": tree.neglect,
+            "completion_count": tree.completion_count,
+        }
+
+        # parse created at for simple calculations
+        created = tree.created_at
+        createdDate = created.date()
+        created_simple = str(createdDate)
+        jsonable_obj['created_at'] = created_simple
+
+        return jsonable_obj
+
+
+    # create a tree 
+    @staticmethod
+    def plant_tree(details, habitId):
+        """creates a new tree under current user"""
+        new_tree = Tree_in_progress(
+            user_id = AuthUtils.get_current_user()['id'],
+            habit_id = habitId,
+            tree_type = details["tree_type"]
+        )
+
+        try:
+            db.session.add(new_tree)
+            db.session.commit()
+            return GardenUtils.parse_treeIP(new_tree)
+        except:
+            return 500
+
+
+
+    # get trees in progress by user 
+    @staticmethod
+    def get_trees_in_progress():
+        """gets trees in progress & updates calculations"""
+        # define return array 
+        return_list = []
+        # get treesIP by user id 
+        user_id = AuthUtils.get_current_user()['id']
+        trees_in_progress = Tree_in_progress.query.filter(
+            Tree_in_progress.user_id == user_id
+        ).all()
+
+
+        # for each tree...
+        for tree in trees_in_progress:
+            # parse tree ?
+            parsed_tree = GardenUtils.parse_treeIP(tree)
+
+            # get habit associated with tree 
+            habit = HabitUtils.get_habit_details(tree.habit_id)
+
+            # add 'habit title' to tree 
+            parsed_tree['habit_title'] = habit["title"]
+            
+
+            # calculate neglect (created to yesterday)
+            date_list = []
+            neglect_count = 0      #  must start fresh for each calc
+            completion_count = 0   #  must start fresh for each calc
+
+            created_at = parsed_tree['created_at']
+            this_day = datetime.today()
+            today = datetime.strftime(this_day, "%Y-%m-%d")
+            parsed_tree['today'] = today
+            if today in habit["Completions"]:    # handle today for completion count
+                completion_count += 1
+            today = datetime.strptime(today, "%Y-%m-%d")
+
+            # -- yesterday = today - timedelta(days=1)
+            # parsed_tree['today'] = today
+            start = datetime.strptime(created_at, "%Y-%m-%d")
+            # parsed_tree['start'] = start
+            # print("START: ", start)
+      
+            delta = today - start
+            delta = int(delta.days)
+            # parsed_tree['delta'] = str(delta)
+            # parsed_tree['daysdelta'] = str(num_days)
+
+            # -- reverse order list of days yesterday -> created
+            days = [this_day - timedelta(days=i) for i in range(1, delta + 1)]
+            parsed_days = [datetime.strftime(date, "%Y-%m-%d") for date in days]    
+            date_list = parsed_days[::-1]
+            parsed_tree['possible_dates'] = date_list
+            parsed_tree['completion_dates'] = habit["Completions"]
+
+            # -- for each day in possible days... 
+            for day in date_list:
+                # if day in habit completions
+                if day in habit["Completions"]:
+                    # increment completion count 
+                    completion_count += 1
+                # else increment neglect count 
+                if day not in habit["Completions"]:
+                    neglect_count += 1
+
+            # -- add Neglect to return (and completion count for now)
+            parsed_tree['completion_count'] = int(completion_count)
+            parsed_tree['neglect'] = int(neglect_count)
+
+            # -- update treeIP db to reflect new calculation 
+            tree.completion_count = completion_count
+            tree.neglect = neglect_count
+            db.session.commit()
+        
+
+            # source 'resiliance' & 'requirements' from tree type helper 
+            treetype = parsed_tree['tree_type']
+            treetype_obj = GardenUtils.tree_types(treetype)
+            resiliance = treetype_obj['resiliance']
+            requirements = treetype_obj['requirements']
+            parsed_tree['resiliance'] = resiliance
+            parsed_tree['requirements'] = requirements
+
+
+            # calculate growth (completions createdAt to today / requirements from treetype) [return 1 if grown]
+            growth = ''
+            if (completion_count == requirements):
+                growth = '1'
+            else:
+                growth = f"{completion_count}/{requirements}"
+            parsed_tree['growth'] = growth
+
+            # calculate status, update if necessary 
+            status = 'Alive'
+            if (neglect_count > resiliance):
+                status = "Dead."
+                tree.status = "Dead."
+                db.session.commit()
+            parsed_tree['status'] = status
+
+            # add object to return array 
+            return_list.append(parsed_tree)
+
+        # return return array 
+        return return_list
+
+
+
+
+    # complete a tree
+    @staticmethod
+    def complete_tree(treeId):
+        # find tree in progress 
+        tree = Tree_in_progress.query.filter(
+            Tree_in_progress.id == treeId
+        ).first() 
+
+        # find its associated habit 
+        habit = Habit.query.filter(
+            Habit.id == tree.habit_id
+        ).first()
+
+        # create new tree_grown object using tree info & associated habit 
+        new_grown_tree = Tree_grown(
+            user_id = AuthUtils.get_current_user()['id'],
+            tree_type = tree.tree_type,
+            habit_name = habit.title
+        )
+
+        # add to db  - TO-DO: add try/except block?
+        try:
+            # TO DO validate user owns this tree 
+            db.session.add(new_grown_tree)
+            db.session.commit()
+
+            # delete tree in progress from db 
+            db.session.delete(tree)
+            db.session.commit()
+        except:
+            return 500 
+
+        return {"message": "deleted treeIP. Added to Grown"}
+
+
+    # delete a dead tree 
+    @staticmethod
+    def delete_dead_tree(treeId):
+        # find tree in progress
+        tree = Tree_in_progress.query.filter(
+            Tree_in_progress.id == treeId
+        ).first() 
+
+        # confirm is dead ?
+        if not (tree.status == "Dead."):
+            return 500
+        
+        db.session.delete(tree)
+        db.session.commit()
+
+        return jsonify({"message": "successfully deleted tree"})
+    
+    # grown tree parse 
+    @staticmethod
+    def parse_grown_tree(tree):
+        jsonable_obj = {
+            "id": tree.id,
+            "user_id": tree.user_id, 
+            "tree_type": tree.tree_type,
+            "habit_name": tree.habit_name,
+        }
+        date = tree.completed_at
+        date = datetime.strftime(date, "%Y-%m-%d")
+        jsonable_obj["completed_at"] = date
+        return jsonable_obj
+
+
+    # get grown trees by user 
+    @staticmethod
+    def get_grown_trees():
+        return_list = []
+        # find grown trees where user_id == current user 
+        trees = Tree_grown.query.filter(
+            Tree_grown.user_id == AuthUtils.get_current_user()['id']
+        ).all()
+
+        # for each grown tree
+        for tree in trees:
+            # parse tree obj for return 
+            parsed_tree = GardenUtils.parse_grown_tree(tree)
+
+            # get treetype obj - grab 'value' 
+            treetype_obj = GardenUtils.tree_types(tree.tree_type)
+            value = treetype_obj['value']
+            parsed_tree['value'] = value
+
+            # append parsed tree to return list 
+            return_list.append(parsed_tree)
+            
+        # return array of grown trees 
+        return return_list
+
+    # sell / delete a grown tree 
+    @staticmethod
+    def sell_tree(treeId):
+        # find grown tree 
+        tree = Tree_grown.query.filter(
+            Tree_grown.id == treeId
+        ).first()
+
+        # find current user
+        current_user =  User.query.filter(
+            User.id == AuthUtils.get_current_user()['id']
+        ).first()
+
+        # get treetype obj - grab 'value' 
+        treetype_obj = GardenUtils.tree_types(tree.tree_type)
+        value = treetype_obj['value']
+
+        # add value to user.pebbles 
+        if not (isinstance(current_user.pebbles, int)):
+            current_user.pebbles = value
+        else: current_user.pebbles += value 
+
+        # delete tree from db 
+        db.session.delete(tree)
+        db.session.commit()
+
+        # return success msg 
+        return jsonify({"message": "tree sold!"})
+
+
+#  =========== AUTHUTILS ===================================================
 
 
 class AuthUtils:

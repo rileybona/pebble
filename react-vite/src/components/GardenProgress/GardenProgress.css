@@ -1,3 +1,95 @@
 .garden-progress-page {
-    margin-left: 200px;
+    margin-left: 25vw;
+    box-sizing: border-box;
+}
+
+.card-dead {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 30px;
+
+    background-color: white;
+    width: 50vw;
+}
+
+
+.card-grown {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 30px;
+
+    background-color: white;
+    box-shadow: 2px 2px 3px rgb(162, 166, 162);
+    border-radius: 8px;
+    width: 50vw;
+}
+
+.card-grown .preview-image {
+    height: 60px;
+    border-radius: 100%;
+}
+
+.card-progress {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 30px;
+
+    background-color: white;
+    box-shadow: 2px 2px 3px rgb(162, 166, 162);
+    border-radius: 8px;
+    width: 50vw;
+}
+
+.card-progress .preview-image {
+    height: 60px;
+    border-radius: 100%;
+}
+
+.infoTag {
+    text-align: center;
+}
+.infoTag p {
+    margin: 0;
+}
+
+.nav-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#otherPage {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+
+
+button.complete {
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 1px 1px 3px green;
+    background-color: rgba(195, 218, 195, 0.887);
+}
+
+button.complete:hover {
+    box-shadow: none;
+    background-color:  rgba(152, 194, 152, 0.887);;
 }

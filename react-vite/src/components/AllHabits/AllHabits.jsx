@@ -91,8 +91,8 @@ function AllHabits() {
     const hiddenState = useSelector((state) => state.habit.hidden);
 
     // define weekdays by time codes 
-    const WEEKDAYS = new Map(); 
-    WEEKDAYS.set(0, "sunday");
+    const WEEKDAYS = new Map();      // Legacy 
+    WEEKDAYS.set(0, 'sunday');
     WEEKDAYS.set(1, 'monday');
     WEEKDAYS.set(2, 'tuesday');
     WEEKDAYS.set(3, 'wednesday');
@@ -107,7 +107,7 @@ function AllHabits() {
         dispatch(getHiddenHabits());
     }, [dispatch, reload]);
 
-    // additional useEffect for circuit help 
+    // additional useEffect for circuit
     useEffect(() => {
 
         if (dueState.length > 0) {
@@ -120,57 +120,25 @@ function AllHabits() {
         }
     }, [dueState, habits, hiddenState, reload])
 
-    // checkbox functionality (onClick function)
+    // checkbox functionality 
     function checkbox (habitId) {
-        // alert(`checking off habit ${habitId}!`);
         dispatch(markCompleted(habitId)).then(() => {
             setReload(reload + 1);
         });
     }
 
-    // uncheck a habit?
+    // uncheck a habit
     function uncheck (habitId) {
         dispatch(removeCompleted(habitId)).then(() => {
             setReload(reload + 1);
         });
     }
 
-    // open edit modal (onClick function)
+    // open edit modal
     function openUpdate (habitId) {
-        // alert(`opening update modal for habit ${habitId}`)
         setModalContent(<UpdateHabitModal habitId={habitId} reload={reload} setReload={setReload}/>);
     }
 
-    // open create modal (onClick function)
-    // function openCreate() {
-    //     alert('open add habit modal');
-    // }
-
-    // SORT habit_array to ONLY display DUE habits
-    // Create second array to store HIDDEN or COMPLETED Habits 
-    // function sortingHat(habits) {
-    //     // define today 
-    //     let today = new Date(); 
-    //     let numday = today.getDay();
-    //     today = WEEKDAYS.get(numday);
-    //     // define vis/hi 
-    //     let vis = [];
-    //     let hid = [];
-
-    //     habits.forEach((habit) => {
-    //         // if daily, add to vis 
-    //         if ((habit.recurrance_type == 'Daily') || (habit.recurrance_type == 'daily')) {
-    //             vis.push(habit); 
-    //         } else {  // if weekly & recurs today, add to vis
-    //             if (habit.Recurrances[today]) vis.push(habit);
-    //             // add to hid
-    //             else hid.push(habit);
-    //         }
-    //     });
-
-    //     setVisHabits(vis);
-    //     setHiddenHabits(hid);
-    // }
 
     // toggle visibility of hidden habits 
     function toggleHiddenHabits() {

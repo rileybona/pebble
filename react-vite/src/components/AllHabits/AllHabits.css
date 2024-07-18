@@ -4,7 +4,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-left: 200px;
+    margin-left: 25vw;
 }
 
 .habits-upper {
@@ -120,4 +120,17 @@
 
 #checked button {
     background-color: lightgray;
+}
+
+.habits-upper button {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 1px 1px 3px black;
+    background-color: rgba(242, 242, 242, 0.862);
+}
+
+.habits-upper button:hover {
+    box-shadow: none;
+    background-color:rgba(121, 199, 153, 0.694);
 }

@@ -35,7 +35,6 @@ def get_habit_details(habitId):
 @login_required
 def post_new_habit():
     req_body = request.get_json()
-    print(req_body)
     new_habit = HabitUtils.create_new_habit(req_body)
     if new_habit == 500: 
         return jsonify({"message": "Habit Creation Failed"}), 500
@@ -47,7 +46,7 @@ def post_new_habit():
 def add_recurrance_data_to_habit(habitId):
     req_body = request.get_json()
     response = RecurranceUtils.add_recurrances(habitId, req_body)
-    if isinstance(response, Exception):
+    if response == 500:
         return jsonify({"message": "Internal Server Error"}), 500 
     return response 
 
