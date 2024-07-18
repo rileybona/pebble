@@ -62,6 +62,11 @@
     margin-bottom: 1em;
 }
 
+.login-button:hover {
+    box-shadow: none;
+    background-color: lightgrey;
+}
+
 .login-footer {
     display: flex;
     flex-direction: column;
@@ -102,4 +107,27 @@
     cursor: pointer;
     box-shadow: 0 0 5px lightgrey;
     margin-bottom: 10px;
+}
+
+#demo-user:hover {
+    box-shadow: none;
+    background-color: lightgray;
+}
+
+.login-footer button {
+    border: none;
+    background-color: white;
+    color: purple;
+}
+
+
+.login-card .hidden {
+    color: white;
+    margin: 0;
+}
+
+.login-card .visible {
+    color: red;
+    margin: 0;
+    margin-left: 15px;
 }

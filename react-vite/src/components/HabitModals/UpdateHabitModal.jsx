@@ -70,8 +70,6 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
         
         if (!Object.keys(validationErrors).length) {
 
-            console.log('dispatch to thunk')
-
             const updatedHabit = {
                 title: title,
                 notes: notes,

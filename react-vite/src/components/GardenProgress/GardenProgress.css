@@ -13,8 +13,18 @@
     padding-right: 15px;
     margin-bottom: 30px;
 
-    background-color: white;
+    background-color: rgb(228, 227, 212);
+    border-radius: 8px;
+    box-shadow: 2px 2px 3px rgb(162, 166, 162);
     width: 50vw;
+}
+
+
+
+.card-dead .preview-image {
+    height: 60px;
+    border-radius: 100%;
+    box-shadow: 1px 1px 3px rgb(198, 184, 184);
 }
 
 
@@ -92,4 +102,19 @@ button.complete {
 button.complete:hover {
     box-shadow: none;
     background-color:  rgba(152, 194, 152, 0.887);;
+}
+
+button.delete-dead {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 1px 1px 2px black;
+    color: rgb(238, 10, 10);
+    background-color: rgb(234, 234, 224);
+}
+
+button.delete-dead:hover {
+    box-shadow: none;
+    background-color: rgb(213, 7, 7);
+    color: white;
 }

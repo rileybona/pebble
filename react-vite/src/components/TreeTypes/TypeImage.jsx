@@ -10,6 +10,7 @@ export default function TypeImage({type}) {
     img_url.set("dead", dead);
     img_url.set("Pine", pine);
     img_url.set("Thale Cress", cress2);
+    img_url.set("ghostweed", "https://dummyimage.com/300")
 
     const imgsrc = img_url.get(type)
     return (

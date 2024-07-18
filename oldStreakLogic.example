@@ -1,0 +1,64 @@
+
+function dateArrToStrings(array) {
+    let stringdates = []
+    array.forEach((date) => {
+        let string = date.toISOString().split('T')[0];
+        stringdates.push(string);
+    });
+    return stringdates; 
+}
+
+function timeStamptoDate(dateObj) {
+    if (typeof dateObj != Date) {
+        dateObj = new Date(dateObj);
+    }
+    let date = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+    return date; 
+}
+
+function calculateStreak(habit) {
+    // skip if no completion/habit data 
+    if (!habit) return 0;
+    if (habit.Completions.length == 0) return 0; 
+
+    // parse & date-ify completions - remove timestamps 
+    let stringCompletions = habit.Completions;
+    let datecompletions = stringCompletions.map((date) => timeStamptoDate(date));
+    const completions = dateArrToStrings(datecompletions);
+    
+    // create array of dates, starting from today, ending with createdAt -- parse to no timestamps 
+    const today = new Date();
+    const createdAt = new Date(habit.created_at);
+    
+    let currentDate = timeStamptoDate(createdAt);
+    let end = timeStamptoDate(today); 
+
+    let dates = [];
+
+    // reverse order created -> today 
+    while (currentDate < end) {
+        dates.unshift(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    dates = dateArrToStrings(dates);
+
+
+    // create count. if today is in completions, count + 1
+    let count = 0; 
+    if (completions.includes(end)) {
+        count++; 
+    }
+
+    // starting from yesterday iterate backward until date not in completions or date == createdAt 
+    while (dates.length) {
+       let date = dates.unshift();
+       if (completions.includes(date)) {
+            count++;
+        } else {
+            return count; 
+        }
+    }
+
+    return count; 
+}

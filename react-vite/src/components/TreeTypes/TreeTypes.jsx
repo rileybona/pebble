@@ -7,7 +7,7 @@ export default function TreeTypes( type ) {
         "requirements": 1,
         "resiliance": 1,
         "value": 1,
-        "quote": "The small genome & short life cycle of Thale Cress make it excellent for testing.",
+        "quote": "The small genome & short life cycle of Thale Cress makes this plant ideal for testing.",
         "url": "https://dummyimage.com/300",
     }
     const thaleObj = new Object(thale)
@@ -22,12 +22,20 @@ export default function TreeTypes( type ) {
     }
     const pineObj = new Object(pine)
 
-    // ??
+    // ghostweed
+    const ghostweed = {
+       "requirements": 10,
+        "resiliance": 0,
+        "value": 100, 
+        "quote": "some folks just aren't cut out for this life"
+    }
+    const ghostoj = new Object(ghostweed);
 
     // add them to a map 
     const typeMap = new Map(); 
     typeMap.set("Thale Cress", thaleObj);
     typeMap.set("Pine", pineObj);
+    typeMap.set("ghostweed", ghostoj);
 
     // return object by type param 
     let returnType = typeMap.get(type); 

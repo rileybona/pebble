@@ -8,71 +8,8 @@ import UpdateHabitModal from '../HabitModals/UpdateHabitModal';
 import { useModal } from '../../context/Modal';
 
 
-function dateArrToStrings(array) {
-    let stringdates = []
-    array.forEach((date) => {
-        let string = date.toISOString().split('T')[0];
-        stringdates.push(string);
-    });
-    return stringdates; 
-}
-
-function timeStamptoDate(dateObj) {
-    if (typeof dateObj != Date) {
-        dateObj = new Date(dateObj);
-    }
-    let date = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
-    return date; 
-}
-
-function calculateStreak(habit) {
-    // skip if no completion/habit data 
-    if (!habit) return 0;
-    if (habit.Completions.length == 0) return 0; 
-
-    // parse & date-ify completions - remove timestamps 
-    let stringCompletions = habit.Completions;
-    let datecompletions = stringCompletions.map((date) => timeStamptoDate(date));
-    const completions = dateArrToStrings(datecompletions);
-    
-    // create array of dates, starting from today, ending with createdAt -- parse to no timestamps 
-    const today = new Date();
-    const createdAt = new Date(habit.created_at);
-    
-    let currentDate = timeStamptoDate(createdAt);
-    let end = timeStamptoDate(today); 
-
-    let dates = [];
-
-    // reverse order created -> today 
-    while (currentDate < end) {
-        dates.unshift(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    dates = dateArrToStrings(dates);
-
-
-    // create count. if today is in completions, count + 1
-    let count = 0; 
-    if (completions.includes(end)) {
-        count++; 
-    }
-
-    // starting from yesterday iterate backward until date not in completions or date == createdAt 
-    while (dates.length) {
-       let date = dates.unshift();
-       if (completions.includes(date)) {
-            count++;
-        } else {
-            return count; 
-        }
-    }
-
-    return count; 
-}
-
 function AllHabits() {
+    // declare dispatch, react hooks, etc. 
     const dispatch = useDispatch();
     const { setModalContent } = useModal();
     // add short circuit 
@@ -86,19 +23,9 @@ function AllHabits() {
     const [text, setText] = useState("show completed");      // toggle logic 
 
     // subscribe to habits slice of state 
-    // const habitState = useSelector((state) => state.habit.habits);
     const dueState = useSelector((state) => state.habit.visible);
     const hiddenState = useSelector((state) => state.habit.hidden);
 
-    // define weekdays by time codes 
-    const WEEKDAYS = new Map();      // Legacy 
-    WEEKDAYS.set(0, 'sunday');
-    WEEKDAYS.set(1, 'monday');
-    WEEKDAYS.set(2, 'tuesday');
-    WEEKDAYS.set(3, 'wednesday');
-    WEEKDAYS.set(4, 'thursday');
-    WEEKDAYS.set(5, 'friday'); 
-    WEEKDAYS.set(6, 'saturday');
 
     // dispatch to get-habits thunk to update state
     useEffect(() => {  // after first render
@@ -200,16 +127,6 @@ function AllHabits() {
                                 <h2 className='habit-name'>{habit.title}</h2>
                                 <p className='habit-notes'>{habit.notes}</p>
                             </div>
-                            <div className='habit-streak-container'>
-                                {calculateStreak(habit) > 0 ? 
-                                    <div className='streak'>
-                                        <p>ico</p>
-                                        <p>{calculateStreak(habit)}</p>
-                                    </div>
-                                    : <p></p>
-                                }
-                                
-                            </div>
                         </div>
                        
                     </div>
@@ -228,15 +145,6 @@ function AllHabits() {
                             <div className='habit-content'>
                                 <h2 className='habit-name'>{habit.title}</h2>
                                 <p className='habit-notes'>{habit.notes}</p>
-                            </div>
-                            <div className='habit-streak-container'>
-                                {calculateStreak(habit) > 0 ? 
-                                    <div className='streak'>
-                                        <p>ico</p>
-                                        <p>{calculateStreak(habit)}</p>
-                                    </div>
-                                    : <p></p>
-                                }
                             </div>
                         </div>
                        
