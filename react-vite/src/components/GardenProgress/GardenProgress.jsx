@@ -3,6 +3,7 @@ import './GardenProgress.css'
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { complete_tree, deleteDeadTree, get_trees_ip } from "../../redux/garden";
+import { IoTrashBinOutline } from "react-icons/io5";
 
 import TypeImage from "../TreeTypes/typeImage";
 
@@ -57,7 +58,7 @@ function GardenProgress() {
                     <h4>{tree.tree_type}</h4>
                     <p>&quot;{tree.habit_title}&quot;</p>
                     <p>{tree.status}</p>
-                    <button className="delete-dead" onClick={() => deleteTheDead(tree.id)}>bin ico</button>
+                    <button className="delete-dead" onClick={() => deleteTheDead(tree.id)}><IoTrashBinOutline /></button>
                 </div>
             )
         }

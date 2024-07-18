@@ -36,8 +36,6 @@ class HabitUtils:
             Habit.user_id == userId
         ).all()
 
-        test = [] # DEBUGGING 
-
         all_habits = [HabitUtils.parse_habit_data(habit) for habit in all_habits]
         for habit in all_habits:
             # if habit is weekly, include which days it recurrs on 
@@ -90,10 +88,7 @@ class HabitUtils:
         day = day.weekday()
         today = HabitUtils.day_helper(day)
   
-        # testData = some_habits[1]["Recurrances"]
-        # return testData
-        # if testData['friday'] == True : return {"friday": "true"}
-        # else: return {"friday": "false"}
+
         for habit in some_habits:
             if (habit["recurrance_type"] == 'Daily'):
                 display_habits.append(habit)
@@ -443,6 +438,13 @@ class GardenUtils:
             "value": 10
         }
 
+        # ghostweed 
+        ghostweed = {
+            "requirements": 10,
+            "resiliance": 0,
+            "value": 100
+        }
+
         # define rare one? 
             # requirements - 21
             # resiliance - 0
@@ -451,6 +453,7 @@ class GardenUtils:
         type_dict = dict()
         type_dict['Thale Cress'] = thale
         type_dict['Pine'] = pine
+        type_dict['ghostweed'] = ghostweed
 
 
         # get value object by key == param treetype 
@@ -596,7 +599,7 @@ class GardenUtils:
 
             # calculate status, update if necessary 
             status = 'Alive'
-            if (neglect_count > resiliance):
+            if (neglect_count > resiliance) or (tree.tree_type == "ghostweed"):
                 status = "Dead."
                 tree.status = "Dead."
                 db.session.commit()

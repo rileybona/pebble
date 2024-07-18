@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import { thunkSignup } from "../../redux/session";
@@ -14,9 +14,46 @@ function SignupFormModal() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
+  const [valErrors, setValErrors] = useState({}); 
+  const [showValErrs, setShowValErrs] = useState('hidden');
+
+
+  useEffect(() => {
+    const errobj = {};
+    let need = false;
+    // email is an email 
+    if (!email.includes('@')) {
+     errobj.email = 'must input an email!'
+     need = true;
+    }
+
+    // username
+    if (username.length < 5) {
+      errobj.username = 'username must be more than 5 characters!';
+      need = true;
+    }
+    // firstName 
+    // lastName
+    // password length 
+    if (password.length < 5) {
+      errobj.password = 'password must be more than 5 characters.'
+      need = true;
+    }
+
+    if (need) setValErrors(errobj);
+
+  }, [email, username, password])
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (Object.keys(valErrors).length > 0) {
+      setShowValErrs('visible');
+      return
+    }
+    
 
     if (password !== confirmPassword) {
       return setErrors({
@@ -47,6 +84,7 @@ function SignupFormModal() {
       {errors.server && <p>{errors.server}</p>}
       <form id="signup-form" onSubmit={handleSubmit}>
         <h1>Sign Up</h1>
+        <p className={showValErrs}>{valErrors.email}</p>
         <label>
           Email
           <input
@@ -57,6 +95,7 @@ function SignupFormModal() {
           />
         </label>
         {errors.email && <p>{errors.email}</p>}
+        <p className={showValErrs}>{valErrors.username}</p>
         <label>
           Username
           <input
@@ -87,6 +126,7 @@ function SignupFormModal() {
           />
         </label>
         {errors.lastName && <p>{errors.lastName}</p>}
+        <p className={showValErrs}>{valErrors.password}</p>
         <label>
           Password
           <input

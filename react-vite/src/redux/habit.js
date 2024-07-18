@@ -143,7 +143,6 @@ export const createHabit = (data) => async (dispatch) => {
             return res;
 
         } else {
-            console.log("addHab thunk - fetch failed");
             throw new Error("habit POST fetch failed");
         }
     } catch(err) {
@@ -184,7 +183,6 @@ export const editHabit = (details, habitId) => async (dispatch) => {
 
 export const addRecurranceData = (details, habitId) => async() => {
     try{   
-        console.log("~addRec thunk ~ passing in details:", details)
         const options = {
             method: "POST",
             headers: {
@@ -196,7 +194,7 @@ export const addRecurranceData = (details, habitId) => async() => {
         
         if (response.ok) {
             const res = await response.json();
-            console.log("fetch returns this data: ", res);
+            return res;
         } else {
             throw new Error("Add recurrance fetch failed.");
         }

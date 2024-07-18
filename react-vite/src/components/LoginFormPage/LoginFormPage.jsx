@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { thunkLogin } from "../../redux/session";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 import { useModal } from "../../context/Modal";
+import OpenModalButton from '../OpenModalButton';
+import SignupFormModal from '../SignupFormModal';
 
 function LoginFormPage() {
   const navigate = useNavigate();
@@ -14,6 +16,24 @@ function LoginFormPage() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
+  const [validationErrors, setValidationErrors] = useState({});
+  const [showValErrs, setShowValErrs] = useState("hidden"); 
+
+  // useEffect for validations 
+  useEffect(() => {
+    const errs = {}; 
+
+    if (email.length < 5) {
+      errs.email = "email must be longer than 5 characters.";
+    }
+    if (password.length < 3) {
+      errs.password = 'you must input a password!';
+    }
+
+    setValidationErrors(errs);
+
+  }, [email, password])
+
   if (sessionUser) return <Navigate to="/" replace={true} />;
 
   const loginDemo = (e) => {
@@ -22,9 +42,13 @@ function LoginFormPage() {
     closeModal();
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (Object.values(validationErrors).length > 0 ) {
+        setShowValErrs('visible'); 
+        return;
+    }
 
     const serverResponse = await dispatch(
       thunkLogin({
@@ -49,6 +73,7 @@ function LoginFormPage() {
         <div className="email">
           <label>
             Email
+            <p className={showValErrs}>{validationErrors.email}</p>
             <input
               type="text"
               value={email}
@@ -61,6 +86,7 @@ function LoginFormPage() {
         <div className="password">
           <label>
             Password
+            <p className={showValErrs}>{validationErrors.password}</p>
             <input
               type="password"
               value={password}
@@ -77,7 +103,13 @@ function LoginFormPage() {
       </form>
       <div className="login-footer">
         <p className="desc">don&apos;t have an account?</p>
-        <p className="create-account">Create Account</p>
+        <OpenModalButton 
+          className='create-account'
+          buttonText='Create Account'
+          modalComponent={
+            <SignupFormModal />
+          }
+        />
       </div>
     </div>
   );

@@ -185,7 +185,6 @@ const gardenReducer = (
                 trees.push(tree);
             });
             const trees_IP = { trees }
-            // console.log("Redux ~ typeof trees: ", (typeof trees_IP.trees));
             return { ...state, trees_IP}
         }          
         case GET_TREES_GROWN: {

@@ -17,7 +17,6 @@ function PlantTreeModal( {habitId} ) {
 
     // function to hide / display 2nd form [handleChange1]
     const handleYNchange = (choice) => {
-        // console.log(choice);
         setRadioValue(choice);
         // set classname to vis if yes (useEffect?)
         // undisable save button 
@@ -40,8 +39,7 @@ function PlantTreeModal( {habitId} ) {
             closeModal();
         } else {
             // dispatch to plant tree thunk (habitId, data) 
-            dispatch(plant_new_tree(habitId, treeType)).then((res) => {
-                console.log(res);
+            dispatch(plant_new_tree(habitId, treeType)).then(() => {
                 closeModal();
             });
         }        
@@ -88,6 +86,7 @@ function PlantTreeModal( {habitId} ) {
                     >
                         <option value='Thale Cress'>Thale Cress</option>
                         <option value='Pine'>Pine</option>
+                        <option value='ghostweed'>ghostweed</option>
                     </select>
                 </form>
                 <TreeTypeSelect 
