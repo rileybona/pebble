@@ -20,29 +20,27 @@ function SignupFormModal() {
 
   useEffect(() => {
     const errobj = {};
-    let need = false;
+    
     // email is an email 
-    if (!email.includes('@')) {
+    if (!email.includes('@') || !email.includes('.') || email.length < 3) {
      errobj.email = 'must input an email!'
-     need = true;
-    }
+    } 
 
     // username
     if (username.length < 5) {
-      errobj.username = 'username must be more than 5 characters!';
-      need = true;
+      errobj.username = 'username must be at least 5 characters!';
     }
     // firstName 
     // lastName
-    // password length 
-    if (password.length < 5) {
-      errobj.password = 'password must be more than 5 characters.'
-      need = true;
-    }
+    // password length NOT WORKING 
+    if (confirmPassword.length < 5) {
+      console.log("useEffect reads pass as: ", confirmPassword)
+      errobj.password = 'password must be at least 5 characters.'
+    } else delete errobj.password
 
-    if (need) setValErrors(errobj);
+    setValErrors(errobj);
 
-  }, [email, username, password])
+  }, [email, username, confirmPassword])
 
 
 
@@ -50,6 +48,7 @@ function SignupFormModal() {
     e.preventDefault();
 
     if (Object.keys(valErrors).length > 0) {
+      console.log("valErros = ", valErrors)
       setShowValErrs('seen');
       return
     }
