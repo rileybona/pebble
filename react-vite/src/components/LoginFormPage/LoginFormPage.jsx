@@ -24,10 +24,10 @@ function LoginFormPage() {
     const errs = {}; 
 
     if (email.length < 5) {
-      errs.email = "email must be longer than 5 characters.";
+      errs.email = "email must be at least 5 characters.";
     }
     if (password.length < 3) {
-      errs.password = 'you must input a password!';
+      errs.password = 'password must be at least 3 characters';
     }
 
     setValidationErrors(errs);
@@ -81,7 +81,7 @@ function LoginFormPage() {
               required
             />
           </label>
-          {errors.email && <p>{errors.email}</p>}
+          {errors.email && <p className="seen">{errors.email}</p>}
         </div>
         <div className="password">
           <label>
@@ -94,7 +94,7 @@ function LoginFormPage() {
               required
             />
           </label>
-          {errors.password && <p>{errors.password}</p>}
+          {errors.password && <p className="seen">{errors.password}</p>}
         </div>
         <button type="submit" className="login-button">Log In</button>
         <button id="demo-user" onClick={loginDemo}>

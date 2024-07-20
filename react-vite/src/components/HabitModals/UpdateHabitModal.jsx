@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 import { editHabit } from '../../redux/habit';
 import PlantTreeModal from './PlantTreeModal';
 import DeleteHabitModal from './DeleteHabitModal';
+import { addRecurranceData } from '../../redux/habit';
+
 
 function UpdateHabitModal({ habitId, reload, setReload}) {
     const { closeModal } = useModal();
@@ -30,6 +32,21 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
     const [friday, setFriday] = useState(true);
     const [saturday, setSaturday] = useState(true);
     const [sunday, setSunday] = useState(true);
+    // pre populate IF old hab is weekly 
+    useEffect(() => {
+        if (currHabit['recurrance_type'] == 'weekly') {
+            setMonday(currHabit['Recurrances'].monday);
+            setTuesday(currHabit['Recurrances'].tuesday);
+            setWednesday(currHabit['Recurrances'].wednesday);
+            setThursday(currHabit['Recurrances'].thursday);
+            setFriday(currHabit['Recurrances'].friday);
+            setSaturday(currHabit['Recurrances'].saturday);
+            setSunday(currHabit['Recurrances'].sunday);
+        }
+    
+    }, [dispatch, currHabit])
+
+   
     // simplify validation logic for recurrance selections 
     const oneDay = (monday || tuesday || wednesday || thursday || friday || saturday || sunday);
 
@@ -44,8 +61,8 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
     
         const errs = {};
         if (title?.length < 1) errs.title = "Please enter a title.";
-        if (title.length > 30) errs.title = "Habit title too long."; 
-        if (notes?.length > 50) errs.notes = "Notes are too long.";
+        if (title.length > 30) errs.title = "Habit title must be under 30 characters"; 
+        if (notes?.length > 50) errs.notes = "Notes must be under 50 characters";
         if (!oneDay) errs.recurrances = "You must select at least one recurring day for a weekly habit.";
 
         setValidationErrors(errs);
@@ -75,10 +92,25 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
                 notes: notes,
                 recurrance_type: recurranceType
             }
-            // dispatch add recurrances if its weekly 
+
 
             // dispatch to update thunk 
-            dispatch(editHabit(updatedHabit, habitId)).then(() => {
+            dispatch(editHabit(updatedHabit, habitId)).then((res) => {
+                // dispatch add recurrances if its weekly 
+                if (recurranceType == 'weekly') {
+                    const habitDays = {
+                        "monday": monday,
+                        "tuesday": tuesday,
+                        "wednesday": wednesday,
+                        "thursday": thursday,
+                        "friday": friday,
+                        "saturday": saturday,
+                        "sunday": sunday
+                    }
+
+                    dispatch(addRecurranceData(habitDays, res.id))
+
+                }
                 setReload(reload + 1);
             });
 
@@ -108,10 +140,11 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
                 <p>warning: you will lose any plants growing for this habit!</p>
                 <div className="primary-info">
                     <label>
-                        {showErrors && validationErrors.title && (
-                            <p className="validation-error">{validationErrors.title}</p>
-                        )}
+
                         <p className="title-label">Title*</p>
+                        {showErrors && validationErrors.title ? (
+                            <p className="validation-error">{validationErrors.title}</p>
+                        ) : <p className='validation-error'></p>}
                         <input 
                             type='text'
                             value={title}
@@ -119,10 +152,10 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
                         />
                     </label>
                     <label>
-                        {showErrors && validationErrors.notes && (
-                            <p className="validation-error">{validationErrors.notes}</p>
-                        )}
                         <p className="notes-label">Notes</p>
+                        {showErrors && validationErrors.notes ? (
+                            <p className="validation-error">{validationErrors.notes}</p>
+                        ) : <p className='validation-error'></p>}
                         <input
                             type='text'
                             value={notes}
@@ -143,10 +176,10 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
                 </label>
                 {(recurranceType == 'weekly') ? 
                     <label>
-                        {showErrors && validationErrors.recurrances && (
-                            <p className="validation-error">{validationErrors.recurrances}</p>
-                        )}
                         <p className="recurrs-label">Repeat Every</p>
+                        {showErrors && validationErrors.recurrances ? (
+                            <p className="validation-error">{validationErrors.recurrances}</p>
+                        ) : <p className='validation-error'></p>}
                         <button onClick={(e) => {
                             e.preventDefault();
                             setSunday(!sunday)}} className={`${sunday}`} id='dayButton'>Sunday</button>

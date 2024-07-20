@@ -170,7 +170,8 @@ export const editHabit = (details, habitId) => async (dispatch) => {
 
         if (response.ok) {
             const editedHabit = await response.json();
-            return dispatch(updateHabit(editedHabit));
+            dispatch(updateHabit(editedHabit));
+            return editedHabit;
         } else {
             throw new Error("Habit PUT fetch failed.")
         }
@@ -290,14 +291,16 @@ const habitReducer = (
             action.payload.map((habit, i) => {
                 visible[i] = habit;
             });
-            return { ...state, visible }
+            const newState = { ...state, visible }
+            return newState
         }
         case GET_HIDDEN_HABITS: {
             const hidden = [];
             action.payload.map((habit, i) => {
                 hidden[i] = habit;
             });
-            return { ...state, hidden }
+            const newState = { ...state, hidden}
+            return newState
         }
         default:
             return state;

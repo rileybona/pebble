@@ -36,15 +36,13 @@ function AllHabits() {
 
     // additional useEffect for circuit
     useEffect(() => {
-
-        if (dueState.length > 0) {
+        if (dueState.length > 0 || hiddenState.length > 0) {
             setHabits(dueState);
             // sortingHat(habits);
+            setHiddenHabits(hiddenState);
             setDone(true)
         }
-        if (hiddenState.length > 0) {
-            setHiddenHabits(hiddenState);
-        }
+
     }, [dueState, habits, hiddenState, reload])
 
     // checkbox functionality 

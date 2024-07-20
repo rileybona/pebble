@@ -3,8 +3,7 @@ const ADD_NEW_TREE = '/garden/ADD_NEW_TREE'
 const GET_TREES_IP = '/garden/GET_TREES_IP'
 const GET_TREES_GROWN = '/garden/GET_TREES_GROWN'
 const DELETE_TREE = '/garden/DELETE_TREE'
-
-
+const REMOVE_IP_TREE = '/garden/REMOVE_IP_TREE'
 
 // define actions 
 const loadTreesIP = (trees) => {
@@ -21,12 +20,13 @@ const loadTreesGrown = (trees) => {
     }
 }
 
-// const loadTreesGrown = (trees) => {
-//     return {
-//         type: GET_TREES_GROWN,
-//         payload: trees
-//     }
-// }
+const removeIPtree = (treeid) => {
+    return {
+        type: REMOVE_IP_TREE,
+        payload: treeid
+    }
+}
+
 
 const sellTree = (tree) => {
     return {
@@ -89,7 +89,7 @@ export const get_trees_ip = () => async(dispatch) => {
 }
 
 // DELETE dead treesIP 
-export const deleteDeadTree = (treeId) => async() => {
+export const deleteDeadTree = (treeId) => async(dispatch) => {
     try {
         const options = {
             method: "DELETE",
@@ -97,8 +97,7 @@ export const deleteDeadTree = (treeId) => async() => {
         const response = await fetch(`/api/garden/progress/${treeId}`, options);
 
         if (response.ok) {
-            return "hurray!"
-            // dispatch(removeTree(treeId))
+            dispatch(removeIPtree(treeId))
         } else {
             throw new Error('failed fetch to delete dead tree.')
         }
@@ -180,24 +179,32 @@ const gardenReducer = (
 ) => {
     switch (action.type) {
         case GET_TREES_IP: {
-            const trees = [];
+            const trees_IP = [];
             action.payload.forEach((tree) => {
-                trees.push(tree);
+                trees_IP[tree.id] = tree;
             });
-            const trees_IP = { trees }
-            return { ...state, trees_IP}
-        }          
+            const newState = { ...state, trees_IP}
+            return newState
+        }       
+        case REMOVE_IP_TREE: {
+            const trees_IP = state.trees_IP
+            delete trees_IP[action.payload];
+            const newState = { ...state, trees_IP}
+            return newState
+        }   
         case GET_TREES_GROWN: {
             const trees_grown = [];
             action.payload.map((tree, i) => {
                 trees_grown[i] = tree;
             });
-            return { ...state, trees_grown}
+            const newState = { ...state, trees_grown}
+            return newState
         }
         case DELETE_TREE: {
             const trees_grown = state.trees_grown;
             delete trees_grown[action.payload];
-            return { ...state, trees_grown}
+            const newState = { ...state, trees_grown}
+            return newState
         }
         default:
             return state

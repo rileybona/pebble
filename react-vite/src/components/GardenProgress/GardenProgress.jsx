@@ -16,7 +16,7 @@ function GardenProgress() {
     const [reload, setReload] = useState(1);
     const [trees, setTrees] = useState([]);
 
-    const treeState = useSelector((state) => state.garden.trees_IP.trees);
+    const treeState = useSelector((state) => state.garden.trees_IP);
 
     // useEffect
     useEffect(() => {
@@ -27,7 +27,7 @@ function GardenProgress() {
     // useEffect 
     useEffect(() => {
         // if there's data, setDone true 
-        if (treeState?.length > 0) {
+        if (treeState) {
             setTrees(Object.values(treeState));
             setDone(true);
         }

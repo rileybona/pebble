@@ -43,6 +43,10 @@
     /* bottom: 15px; */
 }
 
+p.notes-label {
+    margin-bottom: 0;
+}
+
 p.validation-error {
     margin-top: 0;
 }
@@ -62,6 +66,8 @@ p.validation-error {
 .validation-error {
     color: red;
     font-size: small;
+    min-height: 15px;
+    margin-bottom: 2px;
 }
 
 .title-cancel-submit .buttons {
@@ -91,4 +97,13 @@ p.validation-error {
     box-shadow: none;
     background-color: rgba(226, 63, 63, 0.909);
     color: white;
+}
+
+
+.primary-info {
+    min-width: 224px;
+}
+
+p.recurrs-label {
+    margin-bottom: 3px;
 }

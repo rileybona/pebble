@@ -38,8 +38,8 @@ function CreateHabitModal({ reload, setReload }) {
     
         const errs = {};
         if (title.length < 1) errs.title = "Please enter a title.";
-        if (title.length > 30) errs.title = "Habit title too long."; 
-        if (notes.length > 50) errs.notes = "Notes are too long.";
+        if (title.length > 30) errs.title = "Habit title must be under 30 characters"; 
+        if (notes.length > 50) errs.notes = "Notes must be under 50 characters.";
         if (!oneDay) errs.recurrances = "You must select at least one recurring day for a weekly habit.";
 
         setValidationErrors(errs);
@@ -111,9 +111,9 @@ function CreateHabitModal({ reload, setReload }) {
                 <div className="primary-info">
                     <label>
                         <p className="title-label">Title*</p>
-                        {showErrors && validationErrors.title && (
+                        {showErrors && validationErrors.title ? (
                             <p className="validation-error">{validationErrors.title}</p>
-                        )}
+                        ) : <p className="validation-error"></p>}
                         <input 
                             id='titleInput'
                             type='text'
@@ -122,10 +122,10 @@ function CreateHabitModal({ reload, setReload }) {
                         />
                     </label>
                     <label>
-                        {showErrors && validationErrors.notes && (
-                            <p className="validation-error">{validationErrors.notes}</p>
-                        )}
                         <p className="notes-label">Notes</p>
+                        {showErrors && validationErrors.notes ? (
+                            <p className="validation-error">{validationErrors.notes}</p>
+                        ) : <p className="validation-error"></p>}
                         <input
                             type='text'
                             value={notes}
