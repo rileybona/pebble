@@ -28,10 +28,10 @@ const removeIPtree = (treeid) => {
 }
 
 
-const sellTree = (tree) => {
+const sellTree = (treeid) => {
     return {
         type: DELETE_TREE,
-        payload: tree
+        payload: treeid
     }
 }
 
@@ -42,7 +42,7 @@ const addTree = (tree) => {
     }
 }
 
-// define thunks TO-DO ! ADD OPTIONS !! 
+// define thunks 
 // PLANT a new tree for a habit 
 export const plant_new_tree = (habitId, treetype) => async(dispatch) => {
     try {
@@ -160,8 +160,9 @@ export const sell_tree = (treeId) => async(dispatch) => {
 
         if (response.ok) {
             const res = await response.json(); 
-            dispatch(sellTree(treeId))
-            console.log("wohoo!", res); 
+            await dispatch(sellTree(treeId))
+            // console.log("wohoo!", res); 
+            return res;
         } else {
             throw new Error("fetch to sell tree failed.")
         }

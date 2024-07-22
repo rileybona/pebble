@@ -591,7 +591,7 @@ class GardenUtils:
 
             # calculate growth (completions createdAt to today / requirements from treetype) [return 1 if grown]
             growth = ''
-            if (completion_count == requirements):
+            if (completion_count == requirements or completion_count > requirements):
                 growth = '1'
             else:
                 growth = f"{completion_count}/{requirements}"

@@ -135,7 +135,7 @@ function SignupFormModal() {
             required
           />
         </label>
-        {errors.password && <p>{errors.password}</p>}
+        {errors.password && <p className="seen">{errors.password}</p>}
         <label>
           Confirm Password
           <input
@@ -145,7 +145,7 @@ function SignupFormModal() {
             required
           />
         </label>
-        {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+        {errors.confirmPassword && <p className="seen">{errors.confirmPassword}</p>}
         <button id="signup-button" type="submit">
           Submit
         </button>

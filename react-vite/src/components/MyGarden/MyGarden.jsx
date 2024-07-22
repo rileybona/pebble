@@ -23,11 +23,11 @@ function MyGarden() {
     }, [dispatch, reload]);
 
     useEffect(() => {
-        if (grownState?.length > 0) {
+        if (grownState) {
             setTrees(Object.values(grownState));
             setDone(true);
         }
-    }, [grownState]);
+    }, [grownState, reload]);
 
     // const handleSell = (e, treeId) => {
     //     e.preventDefault();
