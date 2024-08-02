@@ -54,7 +54,7 @@ function PlantTreeModal( {habitId} ) {
                         disabled={radioValue == ''}
                         onClick={(e) => handleSubmit(e)}
                      >Save</button>
-                    <h3>Would you like to plant a tree for habit {habitId}?</h3>
+                    <h3>Would you like to plant a tree for this habit?</h3>
                 </div>
                 <form className='yes-no'>
                     <label className='yes'>
