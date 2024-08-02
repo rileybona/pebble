@@ -137,7 +137,7 @@ function UpdateHabitModal({ habitId, reload, setReload}) {
                     </div>
                    
                 </div>
-                <p>warning: you will lose any plants growing for this habit!</p>
+{/*                 <p>warning: you will lose any plants growing for this habit!</p> */}
                 <div className="primary-info">
                     <label>
 
