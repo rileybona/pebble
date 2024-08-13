@@ -18,6 +18,13 @@
 
 Pebble functions as my solo capstone project for App Academy, pushing me to develop a fully functioning web application front to back with limited external support. The primary goal is to garner experience performing full stack softwate engineer work with fast-paced deadlines. I also aim to provide a meaningful tracking system for my own habit goals, as well as a supportive platform for others trying to get their life together!
 
+## What's Next ? 
+- **Store** My next feature to implement is a Store, where users can exhange pebbs for new plant types, each with unique challenges and values, giving them more plant options to grow with their habits.
+- **Friends** After store, I aim to implement a 'friends' functionality to the site, so users can connect with friends and family and share their progress! 
+- **Accountability** Users will be able not only to connect with friends, but to plant a shared tree with a friend for ultimate accountability buddy system-- if one partner neglects the habit, the tree will die for both users!
+- **Analytics** That which gets measured gets improved! Analytics will be a dashboard for users to see their progress visualized in various forms, and how their performance stacks up against past periods. 
+
+
 ## 💻 Tech Stack
 
 ### 📚 Languages
